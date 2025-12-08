@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESON8 | Official Band Site</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* LIGHT THEME VARIABLES */
+            --bg-color: #ffffff;
+            --brand-blue: #2b40b5;
+            --brand-yellow: #fcd116;
+            --text-main: #111111;
+            --paper-off-white: #f8f8f8;
+            --border-thick: 3px solid #111;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            
+            /* Dotted Grid Pattern (Blue and Light Grey dots) */
+            background-image: 
+                radial-gradient(var(--brand-blue) 1.5px, transparent 1.5px),
+                radial-gradient(#e0e0e0 1.5px, transparent 1.5px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            padding-top: 0; 
+        }
+
+        /* --- STICKY NAV (The "Slap-On" Tape) --- */
+        .sticky-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .sticky-nav {
+            background: var(--brand-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            /* Sharp shadow for pop-art look */
+            box-shadow: 0 5px 0px #111; 
+            border-bottom: 3px solid #111;
+            
+            /* Animation */
+            transform: translateY(-150%) rotate(-1deg);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: auto;
+        }
+
+        .sticky-nav.visible {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        .sticky-logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sticky-logo-img {
+            width: 40px;
+            height: 40px;
+            background: var(--brand-yellow);
+            border: 2px solid #111;
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 1.2rem;
+        }
+
+        .sticky-name {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.5rem;
+            color: white;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 0 #111;
+        }
+
+        .sticky-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .sticky-links a:hover {
+            color: var(--brand-yellow);
+            text-decoration: underline wavy var(--brand-yellow);
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 5rem 0 2rem 0;
+            position: relative;
+        }
+
+        .logo-lockup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            transform: rotate(-3deg);
+        }
+
+        .main-logo-circle {
+            width: 100px;
+            height: 100px;
+            background: var(--brand-yellow);
+            border-radius: 50%;
+            border: 3px solid #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #111;
+            box-shadow: 5px 5px 0 #111; /* Hard shadow */
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .logo-text {
+            font-family: 'Anton', sans-serif;
+            font-size: 6rem;
+            color: white;
+            background-color: var(--brand-blue);
+            padding: 0.5rem 2rem;
+            border: 3px solid #111;
+            box-shadow: 8px 8px 0 var(--brand-yellow), 12px 12px 0 #111;
+            line-height: 1;
+        }
+
+        .tagline {
+            margin-top: 3rem;
+            font-size: 1.5rem;
+            background: var(--brand-yellow);
+            color: #111;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            transform: rotate(2deg);
+            font-weight: bold;
+            font-family: 'Anton';
+            border: 2px solid #111;
+            box-shadow: 4px 4px 0 #111;
+        }
+
+        /* --- NAV --- */
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.2rem;
+            color: #111;
+            background: white;
+            padding: 0.5rem 1.5rem;
+            transform: skew(-10deg);
+            transition: all 0.3s;
+            border: 2px solid #111;
+            box-shadow: 3px 3px 0 #ddd;
+        }
+
+        .main-nav a:hover {
+            background: var(--brand-blue);
+            color: white;
+            box-shadow: 5px 5px 0 #111;
+            transform: skew(-10deg) translateY(-5px);
+        }
+
+        /* --- SECTIONS & UI --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        section { margin-bottom: 5rem; padding-top: 60px; }
+        h1, h2, h3 { font-family: 'Anton', sans-serif; text-transform: uppercase; }
+        
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #111;
+            /* Text shadow to make it pop on white */
+            text-shadow: 3px 3px 0 var(--brand-yellow); 
+        }
+
+        /* Paper Cut Style - Updated for Light Mode */
+        .paper-cut {
+            background-color: white;
+            color: #111;
+            padding: 2rem;
+            position: relative;
+            border: 3px solid #111;
+            box-shadow: 8px 8px 0 #ccc; /* Softer shadow for depth */
+            transform: rotate(-1deg);
+            margin-bottom: 2rem;
+        }
+        .paper-cut.blue { background-color: var(--brand-blue); color: white; transform: rotate(1deg); border-color: #111; box-shadow: 8px 8px 0 #111; }
+        .paper-cut.yellow { background-color: var(--brand-yellow); transform: rotate(-1deg); border-color: #111; box-shadow: 8px 8px 0 #111; }
+
+        .tape {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(2deg);
+            width: 120px; height: 35px; background-color: rgba(200, 200, 200, 0.5); /* Darker tape for light bg */
+            border-left: 2px dashed rgba(0,0,0,0.2); border-right: 2px dashed rgba(0,0,0,0.2);
+        }
+
+        /* Mobile */
+        @media(max-width: 768px) {
+            .logo-text { font-size: 3.5rem; }
+            .sticky-links { display: none; }
+            .sticky-nav { justify-content: center; }
+        }
+
+        /* Grids */
+        .mv-grid, .music-grid, .merch-grid { display: grid; gap: 2rem; }
+        .mv-grid { grid-template-columns: 1fr 1fr; }
+        .music-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .merch-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+        /* Song Cards - Light Mode */
+        .song-card { 
+            background: white; 
+            border: 3px solid #111; 
+            padding: 1rem; 
+            text-align: center; 
+            transition: 0.3s; 
+            box-shadow: 5px 5px 0 var(--brand-blue); /* Pop of color in shadow */
+        }
+        .song-card:hover { transform: scale(1.02) rotate(1deg); box-shadow: 8px 8px 0 var(--brand-blue); }
+        .placeholder-cover { background: #eee; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-family: 'Anton'; font-size: 2rem; color: #111; border: 1px dashed #111;}
+        
+        /* Podcast */
+        .podcast-item { background: white; color: #111; padding: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; border: 2px solid #111; border-left: 10px solid var(--brand-blue); box-shadow: 4px 4px 0 #ddd;}
+        .play-btn { background: var(--brand-blue); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #111; }
+        
+        /* Merch */
+        .merch-item { background: white; padding: 1rem; color: black; text-align: center; transform: rotate(-1deg); border: 2px solid #111; box-shadow: 5px 5px 0 #eee;}
+        .merch-item img { width: 100%; border-bottom: 2px dashed black; margin-bottom: 1rem; }
+        .btn-buy { display: block; background: var(--brand-blue); color: white; padding: 0.5rem; text-decoration: none; font-weight: bold; margin-top: 1rem; border: 2px solid #111; box-shadow: 3px 3px 0 #111; transition: 0.2s;}
+        .btn-buy:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 #111;}
+
+        /* Footer */
+        footer { background-color: var(--brand-blue); color: white; padding: 4rem 2rem; margin-top: 4rem; clip-path: polygon(0 5%, 100% 0, 100% 100%, 0% 100%); position: relative; }
+        /* Add a border top to footer for style */
+        footer::before { content:''; position: absolute; top:0; left:0; width:100%; height: 50px; background: var(--brand-yellow); clip-path: polygon(0 100%, 100% 0, 100% 100%); z-index: 1; opacity: 0.3; }
+
+        .footer-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 900px; margin: 0 auto; z-index: 2; position: relative;}
+        .qr-section { background: white; padding: 1rem; display: inline-block; transform: rotate(-3deg); text-align: center; color: black; border: 3px solid #111; box-shadow: 6px 6px 0 #111; }
+
+        @media(max-width: 600px) {
+            .mv-grid, .footer-content { grid-template-columns: 1fr; text-align: center; }
+            .logo-lockup { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKY NAV -->
+    <div class="sticky-wrapper">
+        <nav class="sticky-nav" id="stickyNav">
+            <div class="sticky-logo-group">
+                <!-- LOGO PLACEHOLDER -->
+                <div class="sticky-logo-img"><i class="fas fa-bolt"></i></div>
+                <div class="sticky-name">RESON8</div>
+            </div>
+            <div class="sticky-links">
+                <a href="#about">About</a>
+                <a href="#music">Music</a>
+                <a href="#podcast">Podcast</a>
+                <a href="#merch">Merch</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="logo-lockup">
+                <!-- LOGO PLACEHOLDER -->
+                <div class="main-logo-circle">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="logo-text">RESON8</div>
+            </div>
+
+            <div class="tagline">带你 认识 什么是 RESON8</div>
+        </header>
+
+        <!-- STATIC NAV -->
+        <nav class="main-nav">
+            <a href="#about">About</a>
+            <a href="#music">Music</a>
+            <a href="#podcast">Podcast</a>
+            <a href="#merch">Merch</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <!-- MISSION & VISION -->
+        <section id="about">
+            <h2 class="section-title">Who We Are</h2>
+            <div class="mv-grid">
+                <div class="paper-cut blue">
+                    <div class="tape"></div>
+                    <h3>Our Mission</h3>
+                    <p style="margin-top:1rem; line-height: 1.6;">
+                        To create music that resonates with the soul. We blend distinct sounds to create a frequency that brings people together.
+                    </p>
+                </div>
+                <div class="paper-cut yellow">
+                    <div class="tape"></div>
+                    <h3>Our Vision</h3>
+                    <p style="margin-top:1rem; line-height: 1.6;">
+                        A world where every noise turns into harmony. We strive to be the voice of the new generation.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MUSIC SECTION -->
+        <section id="music">
+            <h2 class="section-title">The Tunes</h2>
+            <div class="paper-cut" style="text-align: center;">
+                <div class="tape"></div>
+                <h3>New Album: "Blue Frequency"</h3>
+                <p>Out Now on all platforms</p>
+            </div>
+            <div class="music-grid">
+                <div class="song-card">
+                    <div class="placeholder-cover">COVER</div>
+                    <h3>Originals</h3>
+                    <p>Track: Neon Lights</p>
+                    <a href="#" style="color:var(--brand-blue); font-weight:bold;">Listen on Spotify</a>
+                </div>
+                <div class="song-card">
+                    <div class="placeholder-cover">VIDEO</div>
+                    <h3>Covers</h3>
+                    <p>Live Session: Pop Medley</p>
+                    <a href="#" style="color:var(--brand-blue); font-weight:bold;">Watch on YouTube</a>
+                </div>
+                 <div class="song-card">
+                    <div class="placeholder-cover">ALBUM</div>
+                    <h3>Full Album</h3>
+                    <p>The Reson8 Experience</p>
+                    <a href="#" style="color:var(--brand-blue); font-weight:bold;">Stream Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PODCAST SECTION -->
+        <section id="podcast">
+            <h2 class="section-title">The Podcast</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="podcast-item">
+                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                    <div>
+                        <h3>Ep. 01: The Beginning</h3>
+                        <small>Duration: 45 min | Topic: Origins</small>
+                    </div>
+                </div>
+                <div class="podcast-item">
+                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                    <div>
+                        <h3>Ep. 02: Behind the Lyrics</h3>
+                        <small>Duration: 30 min | Topic: Songwriting</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MERCH SECTION -->
+        <section id="merch">
+            <h2 class="section-title">Grab The Gear</h2>
+            <div class="merch-grid">
+                <div class="merch-item">
+                    <img src="https://via.placeholder.com/300x300?text=T-Shirt" alt="Merch">
+                    <h3>Band Tee</h3>
+                    <p>RM 50.00</p>
+                    <a href="#" class="btn-buy">ADD TO CART</a>
+                </div>
+                <div class="merch-item">
+                    <img src="https://via.placeholder.com/300x300?text=Tote+Bag" alt="Merch">
+                    <h3>Canvas Tote</h3>
+                    <p>RM 25.00</p>
+                    <a href="#" class="btn-buy">ADD TO CART</a>
+                </div>
+                <div class="merch-item">
+                    <img src="https://via.placeholder.com/300x300?text=Stickers" alt="Merch">
+                    <h3>Sticker Pack</h3>
+                    <p>RM 10.00</p>
+                    <a href="#" class="btn-buy">ADD TO CART</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER / CONTACT -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div>
+                <div class="qr-section">
+                    <div class="qr-placeholder" style="width:150px; height:150px; background:#ddd; margin:0 auto; display:flex; align-items:center; justify-content:center; border:1px solid #999;">
+                        <i class="fas fa-qrcode" style="font-size: 80px; color: #333;"></i>
+                    </div>
+                    <div style="background: var(--brand-blue); color: white; margin-top: 10px; padding: 5px; transform: rotate(-2deg); border: 2px solid #111;">
+                        <strong>奉献</strong> <br> Support Our Music
+                    </div>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">您的奉献将帮助我们在音乐与影视制作上的服事</p>
+            </div>
+            <div class="contact-info">
+                <h3 style="background:white; color:var(--brand-blue); display:inline-block; padding:0 10px; transform:rotate(1deg);">联络方式 / Contact</h3>
+                <p style="margin-bottom: 2rem; margin-top: 1rem;">For gigs, music services, or just to say hi.</p>
+                <div class="contact-list" style="font-size:1.2rem;">
+                    <p><i class="fab fa-instagram" style="color:var(--brand-yellow);"></i> @reson8.official</p>
+                    <p><i class="fas fa-envelope" style="color:var(--brand-yellow);"></i> official.reson8@gmail.com</p>
+                    <p><i class="fab fa-whatsapp" style="color:var(--brand-yellow);"></i> +60 11-1155 6686</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 3rem; opacity: 0.8; font-size: 0.8rem;">&copy; 2023 RESON8. Made with Noise.</p>
+    </footer>
+
+    <!-- SCRIPT FOR STICKY NAV -->
+    <script>
+        const stickyNav = document.getElementById('stickyNav');
+        const showOnPx = 300;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > showOnPx) {
+                stickyNav.classList.add('visible');
+            } else {
+                stickyNav.classList.remove('visible');
+            }
+        });
+    </script>
+
+</body>
+</html>
