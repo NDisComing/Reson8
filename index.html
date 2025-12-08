@@ -15,7 +15,6 @@
             --brand-yellow: #fcd116;
             --text-main: #111111;
             --paper-off-white: #f8f8f8;
-            --border-thick: 3px solid #111;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,7 +26,7 @@
             font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
             
-            /* Dotted Grid Pattern (Blue and Light Grey dots) */
+            /* Dotted Grid Pattern */
             background-image: 
                 radial-gradient(var(--brand-blue) 1.5px, transparent 1.5px),
                 radial-gradient(#e0e0e0 1.5px, transparent 1.5px);
@@ -36,7 +35,125 @@
             padding-top: 0; 
         }
 
-        /* --- STICKY NAV (The "Slap-On" Tape) --- */
+        /* --- CAROUSEL SLIDER STYLES --- */
+        .carousel-section {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto 5rem auto; /* Bottom margin to separate from About Us */
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .carousel-frame {
+            border: 4px solid #111;
+            box-shadow: 10px 10px 0 var(--brand-blue);
+            position: relative;
+            overflow: hidden; /* Hides slides that are off-screen */
+            background: #000;
+            aspect-ratio: 16/9; /* Keeps consistent rectangular shape */
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            height: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(20%) contrast(110%); /* Slight filter for "zine" look */
+        }
+
+        /* Carousel Caption (Paper Cut Style) */
+        .slide-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: var(--brand-yellow);
+            color: #111;
+            padding: 1rem 1.5rem;
+            border: 3px solid #111;
+            transform: rotate(-2deg);
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.8);
+            max-width: 80%;
+        }
+
+        .slide-caption h3 {
+            font-size: 2rem;
+            margin-bottom: 0.2rem;
+            background: white;
+            display: inline-block;
+            padding: 0 5px;
+        }
+
+        .slide-caption p {
+            font-weight: bold;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Carousel Controls */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--paper-off-white);
+            border: 3px solid #111;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            box-shadow: 3px 3px 0 #111;
+        }
+
+        .carousel-btn:hover {
+            background: var(--brand-blue);
+            color: white;
+            box-shadow: 5px 5px 0 #111;
+        }
+
+        .carousel-btn.prev { left: 1rem; }
+        .carousel-btn.next { right: 1rem; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            background: white;
+            border: 2px solid #111;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: var(--brand-blue);
+            transform: scale(1.2);
+        }
+
+        /* --- STICKY NAV --- */
         .sticky-wrapper {
             position: fixed;
             top: 0;
@@ -52,234 +169,73 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.8rem 2rem;
-            /* Sharp shadow for pop-art look */
             box-shadow: 0 5px 0px #111; 
             border-bottom: 3px solid #111;
-            
-            /* Animation */
             transform: translateY(-150%) rotate(-1deg);
             transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             pointer-events: auto;
         }
 
-        .sticky-nav.visible {
-            transform: translateY(0) rotate(0deg);
-        }
+        .sticky-nav.visible { transform: translateY(0) rotate(0deg); }
 
-        .sticky-logo-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sticky-logo-img {
-            width: 40px;
-            height: 40px;
-            background: var(--brand-yellow);
-            border: 2px solid #111;
-            border-radius: 50%;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            color: var(--text-main);
-            font-size: 1.2rem;
-        }
-
-        .sticky-name {
-            font-family: 'Anton', sans-serif;
-            font-size: 1.5rem;
-            color: white;
-            letter-spacing: 1px;
-            text-shadow: 2px 2px 0 #111;
-        }
-
-        .sticky-links a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-family: 'Anton', sans-serif;
-            text-transform: uppercase;
-            font-size: 1rem;
-            transition: color 0.3s;
-        }
-
-        .sticky-links a:hover {
-            color: var(--brand-yellow);
-            text-decoration: underline wavy var(--brand-yellow);
-        }
+        .sticky-logo-group { display: flex; align-items: center; gap: 10px; }
+        .sticky-logo-img { width: 40px; height: 40px; background: var(--brand-yellow); border: 2px solid #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-main); font-size: 1.2rem; }
+        .sticky-name { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: white; letter-spacing: 1px; text-shadow: 2px 2px 0 #111; }
+        .sticky-links a { color: white; text-decoration: none; margin-left: 20px; font-family: 'Anton', sans-serif; text-transform: uppercase; font-size: 1rem; transition: color 0.3s; }
+        .sticky-links a:hover { color: var(--brand-yellow); text-decoration: underline wavy var(--brand-yellow); }
 
         /* --- HEADER --- */
-        header {
-            text-align: center;
-            padding: 5rem 0 2rem 0;
-            position: relative;
-        }
-
-        .logo-lockup {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            transform: rotate(-3deg);
-        }
-
-        .main-logo-circle {
-            width: 100px;
-            height: 100px;
-            background: var(--brand-yellow);
-            border-radius: 50%;
-            border: 3px solid #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #111;
-            box-shadow: 5px 5px 0 #111; /* Hard shadow */
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .logo-text {
-            font-family: 'Anton', sans-serif;
-            font-size: 6rem;
-            color: white;
-            background-color: var(--brand-blue);
-            padding: 0.5rem 2rem;
-            border: 3px solid #111;
-            box-shadow: 8px 8px 0 var(--brand-yellow), 12px 12px 0 #111;
-            line-height: 1;
-        }
-
-        .tagline {
-            margin-top: 3rem;
-            font-size: 1.5rem;
-            background: var(--brand-yellow);
-            color: #111;
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            transform: rotate(2deg);
-            font-weight: bold;
-            font-family: 'Anton';
-            border: 2px solid #111;
-            box-shadow: 4px 4px 0 #111;
-        }
+        header { text-align: center; padding: 5rem 0 2rem 0; position: relative; }
+        .logo-lockup { display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; transform: rotate(-3deg); }
+        .main-logo-circle { width: 100px; height: 100px; background: var(--brand-yellow); border-radius: 50%; border: 3px solid #111; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #111; box-shadow: 5px 5px 0 #111; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .logo-text { font-family: 'Anton', sans-serif; font-size: 6rem; color: white; background-color: var(--brand-blue); padding: 0.5rem 2rem; border: 3px solid #111; box-shadow: 8px 8px 0 var(--brand-yellow), 12px 12px 0 #111; line-height: 1; }
+        .tagline { margin-top: 3rem; font-size: 1.5rem; background: var(--brand-yellow); color: #111; display: inline-block; padding: 0.5rem 1rem; transform: rotate(2deg); font-weight: bold; font-family: 'Anton'; border: 2px solid #111; box-shadow: 4px 4px 0 #111; }
 
         /* --- NAV --- */
-        .main-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-
-        .main-nav a {
-            text-decoration: none;
-            font-family: 'Anton', sans-serif;
-            font-size: 1.2rem;
-            color: #111;
-            background: white;
-            padding: 0.5rem 1.5rem;
-            transform: skew(-10deg);
-            transition: all 0.3s;
-            border: 2px solid #111;
-            box-shadow: 3px 3px 0 #ddd;
-        }
-
-        .main-nav a:hover {
-            background: var(--brand-blue);
-            color: white;
-            box-shadow: 5px 5px 0 #111;
-            transform: skew(-10deg) translateY(-5px);
-        }
+        .main-nav { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 4rem; flex-wrap: wrap; margin-top: 2rem; }
+        .main-nav a { text-decoration: none; font-family: 'Anton', sans-serif; font-size: 1.2rem; color: #111; background: white; padding: 0.5rem 1.5rem; transform: skew(-10deg); transition: all 0.3s; border: 2px solid #111; box-shadow: 3px 3px 0 #ddd; }
+        .main-nav a:hover { background: var(--brand-blue); color: white; box-shadow: 5px 5px 0 #111; transform: skew(-10deg) translateY(-5px); }
 
         /* --- SECTIONS & UI --- */
         .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
         section { margin-bottom: 5rem; padding-top: 60px; }
         h1, h2, h3 { font-family: 'Anton', sans-serif; text-transform: uppercase; }
-        
-        .section-title {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #111;
-            /* Text shadow to make it pop on white */
-            text-shadow: 3px 3px 0 var(--brand-yellow); 
-        }
+        .section-title { font-size: 3rem; margin-bottom: 2rem; text-align: center; color: #111; text-shadow: 3px 3px 0 var(--brand-yellow); }
 
-        /* Paper Cut Style - Updated for Light Mode */
-        .paper-cut {
-            background-color: white;
-            color: #111;
-            padding: 2rem;
-            position: relative;
-            border: 3px solid #111;
-            box-shadow: 8px 8px 0 #ccc; /* Softer shadow for depth */
-            transform: rotate(-1deg);
-            margin-bottom: 2rem;
-        }
+        /* Paper Cut Style */
+        .paper-cut { background-color: white; color: #111; padding: 2rem; position: relative; border: 3px solid #111; box-shadow: 8px 8px 0 #ccc; transform: rotate(-1deg); margin-bottom: 2rem; }
         .paper-cut.blue { background-color: var(--brand-blue); color: white; transform: rotate(1deg); border-color: #111; box-shadow: 8px 8px 0 #111; }
         .paper-cut.yellow { background-color: var(--brand-yellow); transform: rotate(-1deg); border-color: #111; box-shadow: 8px 8px 0 #111; }
+        .tape { position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 120px; height: 35px; background-color: rgba(200, 200, 200, 0.5); border-left: 2px dashed rgba(0,0,0,0.2); border-right: 2px dashed rgba(0,0,0,0.2); }
 
-        .tape {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(2deg);
-            width: 120px; height: 35px; background-color: rgba(200, 200, 200, 0.5); /* Darker tape for light bg */
-            border-left: 2px dashed rgba(0,0,0,0.2); border-right: 2px dashed rgba(0,0,0,0.2);
-        }
-
-        /* Mobile */
-        @media(max-width: 768px) {
-            .logo-text { font-size: 3.5rem; }
-            .sticky-links { display: none; }
-            .sticky-nav { justify-content: center; }
-        }
-
-        /* Grids */
+        /* Grids & Cards */
         .mv-grid, .music-grid, .merch-grid { display: grid; gap: 2rem; }
         .mv-grid { grid-template-columns: 1fr 1fr; }
         .music-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
         .merch-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-
-        /* Song Cards - Light Mode */
-        .song-card { 
-            background: white; 
-            border: 3px solid #111; 
-            padding: 1rem; 
-            text-align: center; 
-            transition: 0.3s; 
-            box-shadow: 5px 5px 0 var(--brand-blue); /* Pop of color in shadow */
-        }
+        .song-card { background: white; border: 3px solid #111; padding: 1rem; text-align: center; transition: 0.3s; box-shadow: 5px 5px 0 var(--brand-blue); }
         .song-card:hover { transform: scale(1.02) rotate(1deg); box-shadow: 8px 8px 0 var(--brand-blue); }
         .placeholder-cover { background: #eee; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-family: 'Anton'; font-size: 2rem; color: #111; border: 1px dashed #111;}
-        
-        /* Podcast */
         .podcast-item { background: white; color: #111; padding: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; border: 2px solid #111; border-left: 10px solid var(--brand-blue); box-shadow: 4px 4px 0 #ddd;}
         .play-btn { background: var(--brand-blue); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #111; }
-        
-        /* Merch */
         .merch-item { background: white; padding: 1rem; color: black; text-align: center; transform: rotate(-1deg); border: 2px solid #111; box-shadow: 5px 5px 0 #eee;}
         .merch-item img { width: 100%; border-bottom: 2px dashed black; margin-bottom: 1rem; }
         .btn-buy { display: block; background: var(--brand-blue); color: white; padding: 0.5rem; text-decoration: none; font-weight: bold; margin-top: 1rem; border: 2px solid #111; box-shadow: 3px 3px 0 #111; transition: 0.2s;}
-        .btn-buy:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 #111;}
-
+        
         /* Footer */
         footer { background-color: var(--brand-blue); color: white; padding: 4rem 2rem; margin-top: 4rem; clip-path: polygon(0 5%, 100% 0, 100% 100%, 0% 100%); position: relative; }
-        /* Add a border top to footer for style */
         footer::before { content:''; position: absolute; top:0; left:0; width:100%; height: 50px; background: var(--brand-yellow); clip-path: polygon(0 100%, 100% 0, 100% 100%); z-index: 1; opacity: 0.3; }
-
         .footer-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 900px; margin: 0 auto; z-index: 2; position: relative;}
         .qr-section { background: white; padding: 1rem; display: inline-block; transform: rotate(-3deg); text-align: center; color: black; border: 3px solid #111; box-shadow: 6px 6px 0 #111; }
 
-        @media(max-width: 600px) {
+        @media(max-width: 768px) {
+            .logo-text { font-size: 3.5rem; }
+            .sticky-links { display: none; }
+            .sticky-nav { justify-content: center; }
             .mv-grid, .footer-content { grid-template-columns: 1fr; text-align: center; }
-            .logo-lockup { flex-direction: column; gap: 0.5rem; }
+            .carousel-frame { aspect-ratio: 1/1; /* Square on mobile */ }
+            .slide-caption h3 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -289,7 +245,6 @@
     <div class="sticky-wrapper">
         <nav class="sticky-nav" id="stickyNav">
             <div class="sticky-logo-group">
-                <!-- LOGO PLACEHOLDER -->
                 <div class="sticky-logo-img"><i class="fas fa-bolt"></i></div>
                 <div class="sticky-name">RESON8</div>
             </div>
@@ -308,13 +263,11 @@
         <!-- HEADER -->
         <header>
             <div class="logo-lockup">
-                <!-- LOGO PLACEHOLDER -->
                 <div class="main-logo-circle">
                     <i class="fas fa-bolt"></i>
                 </div>
                 <div class="logo-text">RESON8</div>
             </div>
-
             <div class="tagline">带你 认识 什么是 RESON8</div>
         </header>
 
@@ -326,6 +279,49 @@
             <a href="#merch">Merch</a>
             <a href="#contact">Contact</a>
         </nav>
+
+        <!-- CAROUSEL SLIDER (NEW FEATURE) -->
+        <div class="carousel-section">
+            <div class="carousel-frame">
+                <div class="carousel-track" id="track">
+                    
+                    <!-- SLIDE 1 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=1200&auto=format&fit=crop" alt="Band Performance">
+                        <div class="slide-caption">
+                            <h3>Live at KL</h3>
+                            <p>Bringing the energy to the stage!</p>
+                        </div>
+                    </div>
+                    
+                    <!-- SLIDE 2 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200&auto=format&fit=crop" alt="Studio Session">
+                        <div class="slide-caption">
+                            <h3>New Recording</h3>
+                            <p>Behind the scenes of "Blue Frequency".</p>
+                        </div>
+                    </div>
+                    
+                    <!-- SLIDE 3 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1200&auto=format&fit=crop" alt="Band Gear">
+                        <div class="slide-caption">
+                            <h3>The Gear</h3>
+                            <p>Analog sounds for a digital world.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CONTROLS -->
+                <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                
+                <div class="carousel-dots" id="dotsContainer"></div>
+            </div>
+        </div>
+        <!-- END CAROUSEL -->
 
         <!-- MISSION & VISION -->
         <section id="about">
@@ -453,11 +449,11 @@
         <p style="text-align: center; margin-top: 3rem; opacity: 0.8; font-size: 0.8rem;">&copy; 2023 RESON8. Made with Noise.</p>
     </footer>
 
-    <!-- SCRIPT FOR STICKY NAV -->
+    <!-- SCRIPTS -->
     <script>
+        /* --- STICKY NAV SCRIPT --- */
         const stickyNav = document.getElementById('stickyNav');
         const showOnPx = 300;
-
         window.addEventListener('scroll', () => {
             if (window.scrollY > showOnPx) {
                 stickyNav.classList.add('visible');
@@ -465,6 +461,49 @@
                 stickyNav.classList.remove('visible');
             }
         });
+
+        /* --- CAROUSEL SCRIPT --- */
+        const track = document.getElementById('track');
+        const slides = Array.from(track.children);
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const dotsContainer = document.getElementById('dotsContainer');
+
+        let currentIndex = 0;
+
+        // Create Dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => moveToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = Array.from(dotsContainer.children);
+
+        function updateDots(index) {
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[index].classList.add('active');
+        }
+
+        function moveToSlide(index) {
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+            
+            track.style.transform = 'translateX(-' + (index * 100) + '%)';
+            currentIndex = index;
+            updateDots(index);
+        }
+
+        nextBtn.addEventListener('click', () => moveToSlide(currentIndex + 1));
+        prevBtn.addEventListener('click', () => moveToSlide(currentIndex - 1));
+
+        // Auto Slide every 5 seconds
+        setInterval(() => {
+            moveToSlide(currentIndex + 1);
+        }, 5000);
+
     </script>
 
 </body>
