@@ -3,508 +3,561 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RESON8 | Official Band Site</title>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>RESON8 | Official Website</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;700;800&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --- 1. RESET & VARIABLES --- */
         :root {
-            /* LIGHT THEME VARIABLES */
-            --bg-color: #ffffff;
-            --brand-blue: #2b40b5;
-            --brand-yellow: #fcd116;
-            --text-main: #111111;
-            --paper-off-white: #f8f8f8;
+            --primary-black: #1a1a1a;
+            --primary-white: #f9f9f9;
+            --off-white: #f9f9f9;
+            --youtube-red: #FF0000;
+            --album-blue: #0e1b2a; 
+            --album-gold: #e6cfa8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden; 
+            scroll-behavior: smooth;
+        }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Roboto', sans-serif;
-            overflow-x: hidden;
-            
-            /* Dotted Grid Pattern */
-            background-image: 
-                radial-gradient(var(--brand-blue) 1.5px, transparent 1.5px),
-                radial-gradient(#e0e0e0 1.5px, transparent 1.5px);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-            padding-top: 0; 
+            font-family: 'Lato', sans-serif;
+            color: var(--primary-black);
+            background-color: var(--primary-white);
+            line-height: 1.6;
         }
 
-        /* --- CAROUSEL SLIDER STYLES --- */
-        .carousel-section {
+        /* --- 2. HEADER / NAVIGATION --- */
+        header {
+            position: fixed;
+            top: 0;
             width: 100%;
-            max-width: 1100px;
-            margin: 0 auto 5rem auto; /* Bottom margin to separate from About Us */
-            padding: 0 2rem;
-            position: relative;
-        }
-
-        .carousel-frame {
-            border: 4px solid #111;
-            box-shadow: 10px 10px 0 var(--brand-blue);
-            position: relative;
-            overflow: hidden; /* Hides slides that are off-screen */
-            background: #000;
-            aspect-ratio: 16/9; /* Keeps consistent rectangular shape */
-        }
-
-        .carousel-track {
+            z-index: 1000;
+            padding: 30px 50px;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex;
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            height: 100%;
+            justify-content: center;
+            align-items: center;
         }
 
-        .carousel-slide {
-            min-width: 100%;
-            position: relative;
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            filter: grayscale(20%) contrast(110%); /* Slight filter for "zine" look */
-        }
-
-        /* Carousel Caption (Paper Cut Style) */
-        .slide-caption {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: var(--brand-yellow);
-            color: #111;
-            padding: 1rem 1.5rem;
-            border: 3px solid #111;
-            transform: rotate(-2deg);
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.8);
-            max-width: 80%;
-        }
-
-        .slide-caption h3 {
-            font-size: 2rem;
-            margin-bottom: 0.2rem;
-            background: white;
-            display: inline-block;
-            padding: 0 5px;
-        }
-
-        .slide-caption p {
-            font-weight: bold;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        /* Carousel Controls */
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--paper-off-white);
-            border: 3px solid #111;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 10;
-            font-size: 1.2rem;
+        .nav-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            box-shadow: 3px 3px 0 #111;
+            gap: 40px;
+            transition: gap 0.5s ease;
         }
 
-        .carousel-btn:hover {
-            background: var(--brand-blue);
-            color: white;
-            box-shadow: 5px 5px 0 #111;
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-black);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            position: relative;
+            white-space: nowrap;
         }
 
-        .carousel-btn.prev { left: 1rem; }
-        .carousel-btn.next { right: 1rem; }
-
-        .carousel-dots {
+        .nav-link::after {
+            content: '';
             position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #000;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* HEADER LOGO IMAGE */
+        .header-logo-img {
+            height: 40px; 
+            width: auto;
+            opacity: 0;
+            max-width: 0;
+            transform: translateY(10px);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            margin: 0;
+        }
+
+        /* Scrolled State */
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+        }
+        
+        header.scrolled .nav-container { gap: 40px; }
+        
+        header.scrolled .header-logo-img {
+            opacity: 1;
+            max-width: 200px;
+            transform: translateY(0);
+            margin: 0 20px;
+        }
+
+        /* --- 3. HERO SECTION --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
             display: flex;
-            gap: 10px;
-            z-index: 10;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
-        .dot {
-            width: 15px;
-            height: 15px;
-            background: white;
-            border: 2px solid #111;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .dot.active {
-            background: var(--brand-blue);
-            transform: scale(1.2);
-        }
-
-        /* --- STICKY NAV --- */
-        .sticky-wrapper {
-            position: fixed;
+        .background-video {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000;
-            pointer-events: none;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.85;
         }
 
-        .sticky-nav {
-            background: var(--brand-blue);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 2rem;
-            box-shadow: 0 5px 0px #111; 
-            border-bottom: 3px solid #111;
-            transform: translateY(-150%) rotate(-1deg);
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            pointer-events: auto;
-        }
-
-        .sticky-nav.visible { transform: translateY(0) rotate(0deg); }
-
-        .sticky-logo-group { display: flex; align-items: center; gap: 10px; }
-        .sticky-logo-img { width: 40px; height: 40px; background: var(--brand-yellow); border: 2px solid #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-main); font-size: 1.2rem; }
-        .sticky-name { font-family: 'Anton', sans-serif; font-size: 1.5rem; color: white; letter-spacing: 1px; text-shadow: 2px 2px 0 #111; }
-        .sticky-links a { color: white; text-decoration: none; margin-left: 20px; font-family: 'Anton', sans-serif; text-transform: uppercase; font-size: 1rem; transition: color 0.3s; }
-        .sticky-links a:hover { color: var(--brand-yellow); text-decoration: underline wavy var(--brand-yellow); }
-
-        /* --- HEADER --- */
-        header { text-align: center; padding: 5rem 0 2rem 0; position: relative; }
-        .logo-lockup { display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; transform: rotate(-3deg); }
-        .main-logo-circle { width: 100px; height: 100px; background: var(--brand-yellow); border-radius: 50%; border: 3px solid #111; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #111; box-shadow: 5px 5px 0 #111; animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        .logo-text { font-family: 'Anton', sans-serif; font-size: 6rem; color: white; background-color: var(--brand-blue); padding: 0.5rem 2rem; border: 3px solid #111; box-shadow: 8px 8px 0 var(--brand-yellow), 12px 12px 0 #111; line-height: 1; }
-        .tagline { margin-top: 3rem; font-size: 1.5rem; background: var(--brand-yellow); color: #111; display: inline-block; padding: 0.5rem 1rem; transform: rotate(2deg); font-weight: bold; font-family: 'Anton'; border: 2px solid #111; box-shadow: 4px 4px 0 #111; }
-
-        /* --- NAV --- */
-        .main-nav { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 4rem; flex-wrap: wrap; margin-top: 2rem; }
-        .main-nav a { text-decoration: none; font-family: 'Anton', sans-serif; font-size: 1.2rem; color: #111; background: white; padding: 0.5rem 1.5rem; transform: skew(-10deg); transition: all 0.3s; border: 2px solid #111; box-shadow: 3px 3px 0 #ddd; }
-        .main-nav a:hover { background: var(--brand-blue); color: white; box-shadow: 5px 5px 0 #111; transform: skew(-10deg) translateY(-5px); }
-
-        /* --- SECTIONS & UI --- */
-        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-        section { margin-bottom: 5rem; padding-top: 60px; }
-        h1, h2, h3 { font-family: 'Anton', sans-serif; text-transform: uppercase; }
-        .section-title { font-size: 3rem; margin-bottom: 2rem; text-align: center; color: #111; text-shadow: 3px 3px 0 var(--brand-yellow); }
-
-        /* Paper Cut Style */
-        .paper-cut { background-color: white; color: #111; padding: 2rem; position: relative; border: 3px solid #111; box-shadow: 8px 8px 0 #ccc; transform: rotate(-1deg); margin-bottom: 2rem; }
-        .paper-cut.blue { background-color: var(--brand-blue); color: white; transform: rotate(1deg); border-color: #111; box-shadow: 8px 8px 0 #111; }
-        .paper-cut.yellow { background-color: var(--brand-yellow); transform: rotate(-1deg); border-color: #111; box-shadow: 8px 8px 0 #111; }
-        .tape { position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 120px; height: 35px; background-color: rgba(200, 200, 200, 0.5); border-left: 2px dashed rgba(0,0,0,0.2); border-right: 2px dashed rgba(0,0,0,0.2); }
-
-        /* Grids & Cards */
-        .mv-grid, .music-grid, .merch-grid { display: grid; gap: 2rem; }
-        .mv-grid { grid-template-columns: 1fr 1fr; }
-        .music-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        .merch-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-        .song-card { background: white; border: 3px solid #111; padding: 1rem; text-align: center; transition: 0.3s; box-shadow: 5px 5px 0 var(--brand-blue); }
-        .song-card:hover { transform: scale(1.02) rotate(1deg); box-shadow: 8px 8px 0 var(--brand-blue); }
-        .placeholder-cover { background: #eee; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-family: 'Anton'; font-size: 2rem; color: #111; border: 1px dashed #111;}
-        .podcast-item { background: white; color: #111; padding: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem; border: 2px solid #111; border-left: 10px solid var(--brand-blue); box-shadow: 4px 4px 0 #ddd;}
-        .play-btn { background: var(--brand-blue); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #111; }
-        .merch-item { background: white; padding: 1rem; color: black; text-align: center; transform: rotate(-1deg); border: 2px solid #111; box-shadow: 5px 5px 0 #eee;}
-        .merch-item img { width: 100%; border-bottom: 2px dashed black; margin-bottom: 1rem; }
-        .btn-buy { display: block; background: var(--brand-blue); color: white; padding: 0.5rem; text-decoration: none; font-weight: bold; margin-top: 1rem; border: 2px solid #111; box-shadow: 3px 3px 0 #111; transition: 0.2s;}
+        .hero-logo-container { text-align: center; z-index: 1; padding: 0 20px; }
         
-        /* Footer */
-        footer { background-color: var(--brand-blue); color: white; padding: 4rem 2rem; margin-top: 4rem; clip-path: polygon(0 5%, 100% 0, 100% 100%, 0% 100%); position: relative; }
-        footer::before { content:''; position: absolute; top:0; left:0; width:100%; height: 50px; background: var(--brand-yellow); clip-path: polygon(0 100%, 100% 0, 100% 100%); z-index: 1; opacity: 0.3; }
-        .footer-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 900px; margin: 0 auto; z-index: 2; position: relative;}
-        .qr-section { background: white; padding: 1rem; display: inline-block; transform: rotate(-3deg); text-align: center; color: black; border: 3px solid #111; box-shadow: 6px 6px 0 #111; }
+        .hero-logo-img {
+            width: 60%; 
+            max-width: 600px; 
+            min-width: 280px; 
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
 
-        @media(max-width: 768px) {
-            .logo-text { font-size: 3.5rem; }
-            .sticky-links { display: none; }
-            .sticky-nav { justify-content: center; }
-            .mv-grid, .footer-content { grid-template-columns: 1fr; text-align: center; }
-            .carousel-frame { aspect-ratio: 1/1; /* Square on mobile */ }
-            .slide-caption h3 { font-size: 1.5rem; }
+        /* --- 4. LAYOUT UTILITIES --- */
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        
+        .section-title.underline::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: #000;
+            margin: 15px auto 0 auto;
+        }
+
+        /* --- 5. ABOUT US SECTION --- */
+        #about { background-color: var(--off-white); }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+        
+        .about-text p {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 300;
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 500px;
+            border-radius: 4px;
+            box-shadow: 20px 20px 0px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* RE-ADDED TRANSITION FOR HOVER */
+            transition: transform 0.7s ease;
+        }
+        
+        /* RE-ADDED HOVER EFFECT */
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* --- 6. SONGS SECTION & SLIDESHOW --- */
+        #songs { background-color: var(--primary-white); }
+
+        .song-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 120px;
+            gap: 80px;
+            flex-direction: row; 
+        }
+
+        .layout-right {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        .layout-right .song-details { text-align: right; }
+
+        .album-art-container {
+            width: 450px;
+            height: 450px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+            overflow: hidden; /* Needed for slideshow cropping */
+        }
+
+        /* --- SLIDESHOW STYLES --- */
+        .album-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 1.5s ease-in-out; /* Smooth fade */
+            z-index: 1;
+        }
+
+        .album-slide.active {
+            opacity: 1; /* Visible */
+            z-index: 2;
+        }
+        
+        /* Styling for the CSS Art Slide */
+        .art-renewed-slide {
+            background-color: var(--album-blue);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--album-gold);
+        }
+
+        .art-renewed-slide h3 {
+            font-family: 'Noto Sans SC', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0px;
+            letter-spacing: 5px;
+            text-align: center;
+        }
+        
+        .art-renewed-slide span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        
+        /* Styling for Image Slides */
+        .album-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- SONG DETAILS --- */
+        .song-details {
+            flex: 1;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .song-title-cn {
+            font-family: 'Noto Sans SC', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            color: var(--primary-black);
+        }
+
+        .song-title-en {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: #666;
+        }
+
+        .play-on-text {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .youtube-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 50px;
+            background-color: var(--youtube-red);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* --- 7. FOOTER --- */
+        footer {
+            background-color: var(--primary-black);
+            color: #fff;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .footer-logo-img {
+            max-width: 200px;
+            filter: invert(1);
+            margin-bottom: 20px;
+        }
+        
+        footer p { opacity: 0.5; font-size: 0.8rem; margin-top: 20px; }
+
+        /* --- MOBILE FIXES --- */
+        @media (max-width: 900px) {
+            .section-container { padding: 60px 20px; }
+            header { padding: 15px; }
+            .nav-link { font-size: 0.7rem; }
+            .nav-container { gap: 15px; }
+            header.scrolled .nav-container { gap: 15px; }
+            
+            .about-grid { grid-template-columns: 1fr; gap: 40px; }
+            .about-text h2 { font-size: 2.5rem; text-align: center; }
+            .about-text p { text-align: left; }
+            .about-image { height: 300px; }
+
+            .song-row, .layout-right {
+                flex-direction: column !important;
+                gap: 30px;
+                margin-bottom: 80px;
+                text-align: center !important;
+            }
+
+            .song-details, .layout-right .song-details {
+                text-align: center !important;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .album-art-container {
+                width: 100%;
+                max-width: 350px;
+                height: auto;
+                aspect-ratio: 1 / 1;
+                margin: 0 auto;
+            }
+
+            .art-renewed-slide h3 { font-size: 3rem; }
+            .song-title-cn { font-size: 2.5rem; }
+            .song-title-en { font-size: 1.2rem; margin-bottom: 25px; }
+            .youtube-btn { margin: 0 auto; }
+            
+            header.scrolled .header-logo-img {
+                margin: 0 10px;
+                height: 30px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- STICKY NAV -->
-    <div class="sticky-wrapper">
-        <nav class="sticky-nav" id="stickyNav">
-            <div class="sticky-logo-group">
-                <div class="sticky-logo-img"><i class="fas fa-bolt"></i></div>
-                <div class="sticky-name">RESON8</div>
-            </div>
-            <div class="sticky-links">
-                <a href="#about">About</a>
-                <a href="#music">Music</a>
-                <a href="#podcast">Podcast</a>
-                <a href="#merch">Merch</a>
-                <a href="#contact">Contact</a>
-            </div>
+    <!-- NAVIGATION HEADER -->
+    <header id="main-header">
+        <nav class="nav-container">
+            <a href="#about" class="nav-link">About us</a>
+            <a href="#songs" class="nav-link">Songs</a>
+            
+            <img src="media/Reson8 Logo Black_transparent.png" 
+                 alt="Reson8 Logo" 
+                 class="header-logo-img">
+
+            <a href="#podcasts" class="nav-link">Podcasts</a>
+            <a href="#merch" class="nav-link">Merch</a>
         </nav>
-    </div>
+    </header>
 
-    <div class="container">
-        
-        <!-- HEADER -->
-        <header>
-            <div class="logo-lockup">
-                <div class="main-logo-circle">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div class="logo-text">RESON8</div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <video class="background-video" autoplay muted loop playsinline poster="https://images.pexels.com/photos/167699/pexels-photo-167699.jpeg?auto=compress&cs=tinysrgb&dpr=2">
+            <source src="media/testvideo.mp4" type="video/mp4">
+        </video>
+
+        <div class="hero-logo-container">
+            <img src="media/Reson8 Logo Black_transparent.png"
+                 alt="Reson8 Big Logo" 
+                 class="hero-logo-img">
+
+            <h2 style="font-family:'Montserrat'; font-weight:400; font-size:0.9rem; letter-spacing:4px; margin-top:10px; color:#000;">(OFFICIAL WEBSITE)</h2>
+        </div>
+    </section>
+
+    <!-- ABOUT US SECTION -->
+    <section id="about" class="section-container">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2>About Us</h2>
+                <p>
+                    Reson8 是由一群基督教卫理公会的青年人以音乐与媒体作为核心的事工平台。我们相信，每一个人都渴望与神真实的连结，而这种连接就像收音机需要调到正确的频率，才能明白神的心意，活出神的心意！
+                </p>
+                <p>
+                    Reson8 的异象，就是帮助人们调整“属灵频率”，透过音乐与影片与神共鸣，影响生命，引导人们认识神，渴慕神，亲近神。
+                </p>
+                <p>
+                    我们渴望激发一种内在的回响：让神的话语、神的爱、神的真理，在人们心中 Resonate (共鸣) 起来，使神成为我们事工的核心焦点！
+                </p>
             </div>
-            <div class="tagline">带你 认识 什么是 RESON8</div>
-        </header>
-
-        <!-- STATIC NAV -->
-        <nav class="main-nav">
-            <a href="#about">About</a>
-            <a href="#music">Music</a>
-            <a href="#podcast">Podcast</a>
-            <a href="#merch">Merch</a>
-            <a href="#contact">Contact</a>
-        </nav>
-
-        <!-- CAROUSEL SLIDER (NEW FEATURE) -->
-        <div class="carousel-section">
-            <div class="carousel-frame">
-                <div class="carousel-track" id="track">
-                    
-                    <!-- SLIDE 1 -->
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=1200&auto=format&fit=crop" alt="Band Performance">
-                        <div class="slide-caption">
-                            <h3>Live at KL</h3>
-                            <p>Bringing the energy to the stage!</p>
-                        </div>
-                    </div>
-                    
-                    <!-- SLIDE 2 -->
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200&auto=format&fit=crop" alt="Studio Session">
-                        <div class="slide-caption">
-                            <h3>New Recording</h3>
-                            <p>Behind the scenes of "Blue Frequency".</p>
-                        </div>
-                    </div>
-                    
-                    <!-- SLIDE 3 -->
-                    <div class="carousel-slide">
-                        <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1200&auto=format&fit=crop" alt="Band Gear">
-                        <div class="slide-caption">
-                            <h3>The Gear</h3>
-                            <p>Analog sounds for a digital world.</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- CONTROLS -->
-                <button class="carousel-btn prev" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
-                <button class="carousel-btn next" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
-                
-                <div class="carousel-dots" id="dotsContainer"></div>
+            <div class="about-image">
+                <!-- Image will zoom on hover now -->
+                <img src="media/grouppic.jpeg" alt="Reson8 Team">
             </div>
         </div>
-        <!-- END CAROUSEL -->
+    </section>
 
-        <!-- MISSION & VISION -->
-        <section id="about">
-            <h2 class="section-title">Who We Are</h2>
-            <div class="mv-grid">
-                <div class="paper-cut blue">
-                    <div class="tape"></div>
-                    <h3>Reson8</h3>
-                    <p style="margin-top:1rem; line-height: 1.6;">
-                        是由一群基督教卫理公会的青年人以音乐与媒体制作为核心的事工平台。我们相信，每一个人都渴望与神真实的连结，而这种连接就像收音机需要调到正确的频率，才能明白神的心意，活出神的心意！
-                    </p>
+    <!-- SONGS SECTION -->
+    <section id="songs" class="section-container">
+        <h2 class="section-title underline">Our Songs</h2>
+
+        <!-- SONG 1: Slideshow (CSS Art <-> Photo) -->
+        <div class="song-row">
+            <div class="album-art-container slideshow" id="slideshow-1">
+                <!-- Slide 1: CSS Art -->
+                <div class="album-slide art-renewed-slide active">
+                    <h3>重新<br>得力</h3> 
+                    <span>Renewed Strength</span>
                 </div>
-                <div class="paper-cut yellow">
-                    <div class="tape"></div>
-                    <h3>异象</h3>
-                    <p style="margin-top:1rem; line-height: 1.6;">
-                        帮助人们调整 “属灵频率”，透过音乐与影片与神共鸣，影响生命，引导人们认识神，渴慕神，亲近神
-                    </p>
+                <!-- Slide 2: An Image -->
+                <div class="album-slide">
+                    <img src="media/Renewed Strength.jpg" alt="Renewed Strength Variation">
                 </div>
             </div>
-        </section>
 
-        <!-- MUSIC SECTION -->
-        <section id="music">
-            <h2 class="section-title">The Tunes</h2>
-            <div class="paper-cut" style="text-align: center;">
-                <div class="tape"></div>
-                <h3>New Album: "Blue Frequency"</h3>
-                <p>Out Now on all platforms</p>
-            </div>
-            <div class="music-grid">
-                <div class="song-card">
-                    <div class="placeholder-cover">COVER</div>
-                    <h3>Originals</h3>
-                    <p>Track: Neon Lights</p>
-                    <a href="#" style="color:var(--brand-blue); font-weight:bold;">Listen on Spotify</a>
-                </div>
-                <div class="song-card">
-                    <div class="placeholder-cover">VIDEO</div>
-                    <h3>Covers</h3>
-                    <p>Live Session: Pop Medley</p>
-                    <a href="#" style="color:var(--brand-blue); font-weight:bold;">Watch on YouTube</a>
-                </div>
-                 <div class="song-card">
-                    <div class="placeholder-cover">ALBUM</div>
-                    <h3>Full Album</h3>
-                    <p>The Reson8 Experience</p>
-                    <a href="#" style="color:var(--brand-blue); font-weight:bold;">Stream Now</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- PODCAST SECTION -->
-        <section id="podcast">
-            <h2 class="section-title">The Podcast</h2>
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div class="podcast-item">
-                    <div class="play-btn"><i class="fas fa-play"></i></div>
-                    <div>
-                        <h3>Ep. 01: The Beginning</h3>
-                        <small>Duration: 45 min | Topic: Origins</small>
-                    </div>
-                </div>
-                <div class="podcast-item">
-                    <div class="play-btn"><i class="fas fa-play"></i></div>
-                    <div>
-                        <h3>Ep. 02: Behind the Lyrics</h3>
-                        <small>Duration: 30 min | Topic: Songwriting</small>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MERCH SECTION -->
-        <section id="merch">
-            <h2 class="section-title">Grab The Gear</h2>
-            <div class="merch-grid">
-                <div class="merch-item">
-                    <img src="https://via.placeholder.com/300x300?text=T-Shirt" alt="Merch">
-                    <h3>Band Tee</h3>
-                    <p>RM 50.00</p>
-                    <a href="#" class="btn-buy">ADD TO CART</a>
-                </div>
-                <div class="merch-item">
-                    <img src="https://via.placeholder.com/300x300?text=Tote+Bag" alt="Merch">
-                    <h3>Canvas Tote</h3>
-                    <p>RM 25.00</p>
-                    <a href="#" class="btn-buy">ADD TO CART</a>
-                </div>
-                <div class="merch-item">
-                    <img src="https://via.placeholder.com/300x300?text=Stickers" alt="Merch">
-                    <h3>Sticker Pack</h3>
-                    <p>RM 10.00</p>
-                    <a href="#" class="btn-buy">ADD TO CART</a>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- FOOTER / CONTACT -->
-    <footer id="contact">
-        <div class="footer-content">
-            <div>
-                <div class="qr-section">
-                    <div class="qr-placeholder" style="width:150px; height:150px; background:#ddd; margin:0 auto; display:flex; align-items:center; justify-content:center; border:1px solid #999;">
-                        <i class="fas fa-qrcode" style="font-size: 80px; color: #333;"></i>
-                    </div>
-                    <div style="background: var(--brand-blue); color: white; margin-top: 10px; padding: 5px; transform: rotate(-2deg); border: 2px solid #111;">
-                        <strong>奉献</strong> <br> Support Our Music
-                    </div>
-                </div>
-                <p style="margin-top: 1rem; font-size: 0.9rem;">您的奉献将帮助我们在音乐与影视制作上的服事</p>
-            </div>
-            <div class="contact-info">
-                <h3 style="background:white; color:var(--brand-blue); display:inline-block; padding:0 10px; transform:rotate(1deg);">联络方式 / Contact</h3>
-                <p style="margin-bottom: 2rem; margin-top: 1rem;">For gigs, music services, or just to say hi.</p>
-                <div class="contact-list" style="font-size:1.2rem;">
-                    <p><i class="fab fa-instagram" style="color:var(--brand-yellow);"></i> @reson8.official</p>
-                    <p><i class="fas fa-envelope" style="color:var(--brand-yellow);"></i> official.reson8@gmail.com</p>
-                    <p><i class="fab fa-whatsapp" style="color:var(--brand-yellow);"></i> +60 11-1155 6686</p>
-                </div>
+            <div class="song-details">
+                <div class="song-title-cn">重新得力</div>
+                <div class="song-title-en">Renewed Strength</div>
+                <span class="play-on-text">Play On</span>
+                <a href="#" class="youtube-btn"><i class="fa-brands fa-youtube"></i></a>
             </div>
         </div>
-        <p style="text-align: center; margin-top: 3rem; opacity: 0.8; font-size: 0.8rem;">&copy; 2023 RESON8. Made with Noise.</p>
+
+        <!-- SONG 2: Slideshow (Photo <-> Photo) -->
+        <div class="song-row layout-right">
+            <div class="album-art-container slideshow" id="slideshow-2">
+                <!-- Slide 1 -->
+                <div class="album-slide active">
+                    <img src="media/unceasing.jpeg" alt="Unceasing Song Art">
+                </div>
+                <!-- Slide 2 -->
+                <div class="album-slide">
+                    <img src="media/hello andy.jpg" alt="Worship Background">
+                </div>
+            </div>
+
+            <div class="song-details"> 
+                <div class="song-title-cn">永不止息</div>
+                <div class="song-title-en">Never Ceasing</div>
+                <span class="play-on-text">Play On</span>
+                <a href="#" class="youtube-btn"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="podcasts">
+        <img src="media/Reson8 Logo Black_transparent.png" 
+             alt="Reson8 Footer Logo" 
+             class="footer-logo-img">
+        <p>&copy; 2023 RESON8 Ministry. All Rights Reserved.</p>
     </footer>
 
-    <!-- SCRIPTS -->
     <script>
-        /* --- STICKY NAV SCRIPT --- */
-        const stickyNav = document.getElementById('stickyNav');
-        const showOnPx = 300;
+        // --- 1. Header Scroll Logic ---
+        const header = document.getElementById('main-header');
+        const scrollThreshold = 50;
+
         window.addEventListener('scroll', () => {
-            if (window.scrollY > showOnPx) {
-                stickyNav.classList.add('visible');
+            if (window.scrollY > scrollThreshold) {
+                header.classList.add('scrolled');
             } else {
-                stickyNav.classList.remove('visible');
+                header.classList.remove('scrolled');
             }
         });
 
-        /* --- CAROUSEL SCRIPT --- */
-        const track = document.getElementById('track');
-        const slides = Array.from(track.children);
-        const nextBtn = document.getElementById('nextBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const dotsContainer = document.getElementById('dotsContainer');
+        // --- 2. Slideshow Logic ---
+        function startSlideshows() {
+            // Find all containers with class "slideshow"
+            const slideshowContainers = document.querySelectorAll('.slideshow');
 
-        let currentIndex = 0;
+            slideshowContainers.forEach(container => {
+                const slides = container.querySelectorAll('.album-slide');
+                if (slides.length <= 1) return; // Don't cycle if only 1 slide
 
-        // Create Dots
-        slides.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            if (index === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => moveToSlide(index));
-            dotsContainer.appendChild(dot);
-        });
+                let currentIndex = 0;
 
-        const dots = Array.from(dotsContainer.children);
+                // Cycle every 3.5 seconds
+                setInterval(() => {
+                    // Remove 'active' from current slide
+                    slides[currentIndex].classList.remove('active');
 
-        function updateDots(index) {
-            dots.forEach(dot => dot.classList.remove('active'));
-            dots[index].classList.add('active');
+                    // Calculate next index
+                    currentIndex = (currentIndex + 1) % slides.length;
+
+                    // Add 'active' to next slide
+                    slides[currentIndex].classList.add('active');
+                }, 3500);
+            });
         }
 
-        function moveToSlide(index) {
-            if (index < 0) index = slides.length - 1;
-            if (index >= slides.length) index = 0;
-            
-            track.style.transform = 'translateX(-' + (index * 100) + '%)';
-            currentIndex = index;
-            updateDots(index);
-        }
-
-        nextBtn.addEventListener('click', () => moveToSlide(currentIndex + 1));
-        prevBtn.addEventListener('click', () => moveToSlide(currentIndex - 1));
-
-        // Auto Slide every 5 seconds
-        setInterval(() => {
-            moveToSlide(currentIndex + 1);
-        }, 5000);
-
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', startSlideshows);
     </script>
-
 </body>
 </html>
