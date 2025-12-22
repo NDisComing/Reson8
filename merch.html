@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESON8 | Resonate With God Merch</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;700;800&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- 1. REUSED VARIABLES & RESET --- */
+        :root {
+            --primary-black: #1a1a1a;
+            --primary-white: #ffffff;
+            --off-white: #f4f4f4;
+            --youtube-red: #FF0000;
+            --olive-green: #6F7C6B;
+            --sand-beige: #dccdb6;
+            --grey-default: #e0e0e0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { width: 100%; overflow-x: hidden; scroll-behavior: smooth; }
+        body { font-family: 'Lato', sans-serif; color: var(--primary-black); background-color: var(--primary-white); line-height: 1.6; }
+        img { max-width: 100%; display: block; }
+
+        /* --- 2. HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 1000; padding: 30px 50px;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            display: flex; justify-content: center; align-items: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 30px rgba(0,0,0,0.05);
+        }
+        
+        .nav-container { display: flex; align-items: center; gap: 40px; width: 100%; justify-content: center; }
+        .nav-link { text-decoration: none; color: var(--primary-black); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; position: relative; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: #000; transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+        
+        .header-logo-img { height: 35px; width: auto; margin: 0 20px; }
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary-black); }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--primary-white); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .mobile-menu-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-menu-close { position: absolute; top: 30px; right: 30px; font-size: 2rem; cursor: pointer; background: none; border: none; }
+        .mobile-nav-links { display: flex; flex-direction: column; gap: 40px; text-align: center; }
+        .mobile-nav-link { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary-black); text-decoration: none; text-transform: uppercase; }
+
+        /* --- 3. MERCH PAGE SPECIFIC STYLES --- */
+
+        /* Hero Section */
+        .merch-hero {
+            position: relative;
+            width: 100%;
+            height: 120vh;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+        .merch-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+        }
+        .hero-text-overlay {
+            position: absolute;
+            bottom: 30%;
+            left: 5%;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-text-overlay h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            color: #add8e6;
+            margin-bottom: 0;
+            text-transform: uppercase;
+        }
+        .hero-text-overlay h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 0;
+        }
+
+        /* --- CAROUSEL STYLES --- */
+        .resonance-section {
+            padding: 60px 0;
+            text-align: center;
+            overflow: hidden;
+            background-color: var(--primary-white);
+        }
+
+        .section-header {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-transform: lowercase;
+            letter-spacing: -1px;
+        }
+
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 30px;
+            width: max-content;
+            animation: scroll-right 35s linear infinite;
+        }
+        .carousel-track:hover { animation-play-state: paused; }
+
+        .carousel-card {
+            width: 400px;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-card img { width: 100%; height: 100%; object-fit: cover; }
+        .carousel-card:hover { transform: scale(1.02); }
+
+        @keyframes scroll-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* "The Story" Section */
+        .story-section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+        .story-title { font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; line-height: 1; margin-bottom: 30px; }
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        .story-left img { border-radius: 10px; width: 100%; margin-top: 20px; }
+        .story-right {
+            font-size: 1rem;
+            text-align: justify;
+            color: #333;
+            font-family: 'Lato', sans-serif;
+            line-height: 1.8;
+            padding-top: 60px;
+        }
+
+        /* --- PRODUCT SECTION (UPDATED LAYOUT) --- */
+        .product-section {
+            padding: 60px 20px;
+            background-color: #f0f0f0;
+        }
+
+        /* 1. VISUALS GRID */
+        .product-visuals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+        }
+        
+        .visual-col {
+            position: relative;
+            min-width: 0; /* Prevents overflow */
+        }
+
+        /* 2. CONTROLS CONTAINER */
+        .product-controls-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .instruction-text {
+            width: 100%;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        /* 3. BUTTONS ROW */
+        .inventory-buttons-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .inv-header {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            background-color: var(--grey-default); 
+            color: #fff;
+            text-transform: capitalize;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            -webkit-text-stroke: 4px rgba(0,0,0,0.05);
+        }
+        
+        .inv-header:hover {
+            background-color: #ccc;
+            transform: translateY(-2px);
+        }
+
+        /* Active Colors */
+        .inv-header.white.active {
+            background-color: var(--olive-green);
+            box-shadow: 0 4px 15px rgba(111, 124, 107, 0.4);
+            -webkit-text-stroke: 4px rgba(0,0,0,0.1);
+        }
+        .inv-header.sand.active {
+            background-color: var(--sand-beige);
+            box-shadow: 0 4px 15px rgba(216, 203, 184, 0.4);
+        }
+
+        /* LISTS */
+        .inv-sizes-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            display: none; 
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .inv-sizes-container.active { display: flex; }
+
+        .inv-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 40px;
+        }
+
+        /* Main Image Carousel */
+        .prod-carousel-window {
+            width: 100%;
+            aspect-ratio: 3/4; /* Default for Desktop */
+            border-radius: 20px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            position: relative;
+        }
+        .prod-carousel-window::-webkit-scrollbar { display: none; }
+
+        .prod-img {
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            scroll-snap-align: start;
+        }
+
+        /* TEXT OVERLAY (White / Sand) */
+        .prod-text-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 3rem;
+            color: #fff;
+            line-height: 1;
+            z-index: 10;
+            pointer-events: none;
+            -webkit-text-stroke: 6px #d8cbb8;
+            paint-order: stroke fill;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .prod-text-overlay.txt-white { -webkit-text-stroke: 6px #d8cbb8; color: #fff; }
+        .prod-text-overlay.txt-sand { -webkit-text-stroke: 6px #fff; color: #d8cbb8; }
+
+        /* THUMBNAILS */
+        .thumb-scroll-container { 
+            width: 100%; overflow-x: auto; padding: 10px 0;
+        }
+        .thumb-scroll-container::-webkit-scrollbar { height: 0px; }
+
+        .prod-thumbnails { 
+            display: flex; gap: 8px; min-width: max-content; padding: 0 5px;
+        }
+
+        img.thumb-btn {
+            width: 45px; height: 45px; border-radius: 8px; cursor: pointer;
+            object-fit: cover; border: 2px solid transparent; transition: all 0.2s ease;
+            flex-shrink: 0; opacity: 0.7; background-color: #eee;
+        }
+        img.thumb-btn:hover { opacity: 1; transform: translateY(-2px); }
+        img.thumb-btn.active { opacity: 1; border-width: 2px; transform: scale(1.05); }
+        .white-thumbs img.thumb-btn.active { border-color: var(--olive-green); }
+        .sand-thumbs img.thumb-btn.active { border-color: var(--sand-beige); }
+
+        /* SIZE BUTTONS & INPUT */
+        .size-btn {
+            width: 35px; height: 35px; background-color: var(--grey-default);
+            color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.8rem; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .size-btn:hover { background-color: #ccc; }
+        .size-btn.selected { color: #fff; transform: scale(1.05); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .white-group .size-btn.selected { background-color: var(--olive-green); }
+        .sand-group .size-btn.selected { background-color: var(--sand-beige); }
+
+        .inv-qty-input {
+            font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 600;
+            border: none; border-bottom: 2px solid #333; width: 50px; text-align: center;
+            background: transparent; color: #333; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+        }
+        .inv-qty-input.visible { opacity: 1; pointer-events: auto; }
+        .inv-qty-input:focus { outline: none; }
+        .white-group .inv-qty-input:focus { border-bottom-color: var(--olive-green); }
+        .sand-group .inv-qty-input:focus { border-bottom-color: var(--sand-beige); }
+
+        /* FLOATING CHECKOUT */
+        .floating-checkout-wrapper {
+            position: fixed; bottom: 30px; right: 30px; z-index: 900; 
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.15));
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+        }
+        .floating-checkout-wrapper:hover { transform: scale(1.05); }
+        .checkout-pill { display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 8px; gap: 12px; }
+        .checkout-btn-part {
+            background-color: var(--olive-green); color: white; padding: 10px 20px; border-radius: 8px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 1rem;
+            min-width: 80px; text-align: center;
+        }
+        .checkout-text-part {
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--primary-black);
+            padding-right: 15px; min-width: 60px; text-align: center;
+        }
+
+        /* Size Guide & Footer */
+        .size-guide-section { text-align: center; padding: 60px 20px; background: white; max-width: 1000px; margin: 0 auto; }
+        .size-title-fancy {
+            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3rem;
+            color: #e3dcd2; text-transform: uppercase; letter-spacing: -2px;
+            -webkit-text-stroke: 2px #d8cbb8; margin-bottom: 40px; display: inline-block;
+        }
+        .shirts-diagram { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; }
+        .shirt-outline { width: 300px; opacity: 0.8; }
+        .measurement-table { width: 100%; border-collapse: collapse; font-family: 'Lato', sans-serif; font-size: 0.9rem; color: #666; margin-top: 20px; }
+        .measurement-table th { background-color: #777; color: white; padding: 10px; text-transform: uppercase; font-weight: 400; }
+        .measurement-table td { background-color: #eee; border: 1px solid #ddd; padding: 10px; text-align: center; }
+        .measurement-table tr:nth-child(even) td { background-color: #f9f9f9; }
+
+        footer { background-color: var(--primary-black); color: #fff; padding: 80px 20px; text-align: center; }
+        .footer-logo-img { max-width: 180px; filter: invert(1); margin-bottom: 30px; display: inline-block; }
+        .footer-socials { margin-bottom: 30px; display: flex; justify-content: center; gap: 40px; }
+        .footer-socials a { color: #fff; font-size: 2rem; transition: color 0.3s ease; }
+        .footer-socials a:hover { color: var(--youtube-red); }
+        .footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; }
+        .footer-links a { color: #fff; text-decoration: none; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
+        .copyright { opacity: 0.4; font-size: 0.75rem; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .nav-link { display: none; } .mobile-menu-btn { display: block; } .nav-container { justify-content: space-between; padding: 0 10px; }
+            .merch-hero { height: 60vh; margin-top: 60px; } .hero-text-overlay h1 { font-size: 2.5rem; }
+            .gallery-grid { grid-template-columns: 1fr; gap: 15px; } .story-grid { grid-template-columns: 1fr; gap: 30px; }
+            .story-title { font-size: 2rem; text-align: center; } .story-right { padding-top: 0; }
+            
+            /* MOBILE STACKED LAYOUT */
+            .product-section { padding: 40px 10px; }
+            .product-visuals-grid { grid-template-columns: 1fr; gap: 60px; margin-bottom: 30px; }
+            .prod-carousel-window { aspect-ratio: 1/1; }
+            .prod-text-overlay { font-size: 2.2rem; top: 15px; left: 15px; }
+            .inventory-buttons-row { gap: 10px; }
+            .instruction-text { font-size: 0.9rem; margin-bottom: 30px; }
+
+            .shirts-diagram { flex-direction: column; align-items: center; } .shirt-outline { width: 200px; }
+            .footer-links { flex-direction: column; gap: 15px; } .table-wrapper { overflow-x: auto; } .measurement-table { min-width: 600px; }
+            .carousel-card { width: 280px; height: 200px; } .carousel-track { gap: 15px; }
+            .floating-checkout-wrapper { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header id="main-header">
+        <nav class="nav-container">
+            <a href="index.html#about" class="nav-link">About us</a>
+            <a href="index.html#songs" class="nav-link">Songs</a>
+            <img src="media/Reson8 Logo Black_transparent.png" alt="Reson8 Logo" class="header-logo-img">
+            <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <a href="index.html#podcasts" class="nav-link">Podcasts</a>
+            <a href="index.html#merch" class="nav-link">Merch</a>
+        </nav>
+    </header>
+
+    <div class="mobile-menu-overlay">
+        <button class="mobile-menu-close"><i class="fa-solid fa-xmark"></i></button>
+        <div class="mobile-nav-links">
+            <a href="index.html#about" class="mobile-nav-link">About Us</a>
+            <a href="index.html#songs" class="mobile-nav-link">Songs</a>
+            <a href="index.html#podcasts" class="mobile-nav-link">Podcasts</a>
+            <a href="index.html#merch" class="mobile-nav-link">Merch</a>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="merch-hero">
+        <img src="media/rwg_hero2.jpeg" alt="Resonate with God Group">
+        <div class="hero-text-overlay">
+            <h3>New Merch</h3>
+            <h1>Resonate<br>with God</h1>
+        </div>
+    </section>
+
+    <!-- FEELS THE RESONANCE (Infinite Carousel) -->
+    <section class="resonance-section">
+        <h2 class="section-header">feels the resonance</h2>
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <div class="carousel-card"><img src="media/rwg_lowangle.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_closeup.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_carousel3.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_carousel4.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_carousel5.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_lowangle.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_closeup.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_carousel3.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_carousel4.jpeg"></div>
+                <div class="carousel-card"><img src="media/rwg_carousel5.jpeg"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE STORY SECTION -->
+    <section class="story-section">
+        <div class="story-grid">
+            <div class="story-left">
+                <div style="margin-bottom: 20px; font-family: 'Lato'; text-transform: uppercase; letter-spacing: 1px;">The Story of</div>
+                <h2 class="story-title">Resonate With God</h2>
+                <img src="media/rwg_story.jpeg" alt="Group Back View">
+            </div>
+            <div class="story-right">
+                <p>The story of tiasjdjsajdiajsijdiajisjd dasdasdasaaaaaaadasdada...</p>
+                <p style="margin-top: 20px;">(Replace this dummy text with the actual story).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT SHOWCASE SECTION -->
+    <section class="product-section" id="product-showcase">
+        
+        <!-- 1. VISUALS AREA (Carousels & Thumbs) -->
+        <div class="product-visuals-grid">
+            
+            <!-- White Visuals -->
+            <div class="visual-col">
+                <div class="prod-carousel-window" id="carousel-white">
+                    <h3 class="prod-text-overlay txt-white">White</h3>
+                    <img src="media/rwg_w2.jpg" class="prod-img">
+                    <img src="media/rwg_w1.jpeg" class="prod-img">
+                    <img src="media/rwg_w3.jpg" class="prod-img">
+                    <img src="media/rwg_w4.jpg" class="prod-img">
+                    <img src="media/rwg_w5.jpg" class="prod-img">
+                    <img src="media/rwg_w6.jpg" class="prod-img">
+                    <img src="media/rwg_w7.jpg" class="prod-img">
+                    <img src="media/rwg_w8.jpg" class="prod-img">
+                    <img src="media/rwg_w9.jpg" class="prod-img">
+                    <img src="media/rwg_w10.jpg" class="prod-img">
+                </div>
+                <div class="thumb-scroll-container">
+                    <div class="prod-thumbnails white-thumbs">
+                        <img src="media/rwg_w2.jpg" class="thumb-btn active" onclick="scrollToImg('carousel-white', 0, this)">
+                        <img src="media/rwg_w1.jpeg" class="thumb-btn" onclick="scrollToImg('carousel-white', 1, this)">
+                        <img src="media/rwg_w3.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 2, this)">
+                        <img src="media/rwg_w4.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 3, this)">
+                        <img src="media/rwg_w5.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 4, this)">
+                        <img src="media/rwg_w6.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 5, this)">
+                        <img src="media/rwg_w7.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 6, this)">
+                        <img src="media/rwg_w8.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 7, this)">
+                        <img src="media/rwg_w9.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 8, this)">
+                        <img src="media/rwg_w10.jpg" class="thumb-btn" onclick="scrollToImg('carousel-white', 9, this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sand Visuals -->
+            <div class="visual-col">
+                <div class="prod-carousel-window" id="carousel-sand">
+                    <h3 class="prod-text-overlay txt-sand">Sand</h3>
+                    <img src="media/rwg_b1.jpg" class="prod-img">
+                    <img src="media/rwg_b2.jpg" class="prod-img">
+                    <img src="media/rwg_b3.jpg" class="prod-img">
+                    <img src="media/rwg_b4.jpg" class="prod-img">
+                    <img src="media/rwg_b5.jpg" class="prod-img">
+                    <img src="media/rwg_b6.jpg" class="prod-img">
+                    <img src="media/rwg_b7.jpg" class="prod-img">
+                    <img src="media/rwg_b8.jpg" class="prod-img">
+                    <img src="media/rwg_b9.jpg" class="prod-img">
+                    <img src="media/rwg_b10.jpg" class="prod-img">
+                </div>
+                <div class="thumb-scroll-container">
+                    <div class="prod-thumbnails sand-thumbs">
+                        <img src="media/rwg_b1.jpg" class="thumb-btn active" onclick="scrollToImg('carousel-sand', 0, this)">
+                        <img src="media/rwg_b2.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 1, this)">
+                        <img src="media/rwg_b3.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 2, this)">
+                        <img src="media/rwg_b4.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 3, this)">
+                        <img src="media/rwg_b5.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 4, this)">
+                        <img src="media/rwg_b6.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 5, this)">
+                        <img src="media/rwg_b7.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 6, this)">
+                        <img src="media/rwg_b8.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 7, this)">
+                        <img src="media/rwg_b9.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 8, this)">
+                        <img src="media/rwg_b10.jpg" class="thumb-btn" onclick="scrollToImg('carousel-sand', 9, this)">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 2. CONTROLS AREA (Text -> Buttons -> Lists) -->
+        <div class="product-controls-container">
+            
+            <!-- Instruction Text -->
+            <h3 class="instruction-text">Choose the color & size</h3>
+
+            <!-- Buttons Row (Side by Side) -->
+            <div class="inventory-buttons-row">
+                <div id="btn-white" class="inv-header white" onclick="toggleInventory('white')">White</div>
+                <div id="btn-sand" class="inv-header sand" onclick="toggleInventory('sand')">Sand</div>
+            </div>
+
+            <!-- Lists Area (Stacked Below) -->
+            <div class="inventory-lists-area">
+                
+                <!-- White List -->
+                <div id="list-white" class="inv-sizes-container white-group">
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">S</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">M</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">L</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">XL</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">2XL</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">3XL</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                </div>
+
+                <!-- Sand List -->
+                <div id="list-sand" class="inv-sizes-container sand-group">
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">S</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">M</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">L</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">XL</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">2XL</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                    <div class="inv-row"><div class="size-btn" onclick="toggleSize(this)">3XL</div><input type="number" min="0" value="0" class="inv-qty-input"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SIZE GUIDE -->
+    <section class="size-guide-section">
+        <div class="size-title-fancy">Size guide</div>
+        <div class="shirts-diagram">
+            <img src="media/white_exp.png" class="shirt-outline" alt="Shirt Sand">
+            <img src="media/beige_exp.png" class="shirt-outline" style="border:1px solid #eee;" alt="Shirt White">
+        </div>
+        <div class="table-wrapper">
+            <table class="measurement-table">
+                <thead><tr><th>measurement (inch)</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>2XL</th><th>3XL</th></tr></thead>
+                <tbody>
+                    <tr><td>Chest</td><td>21.0</td><td>22.0</td><td>23.0</td><td>24.0</td><td>25.0</td><td>26.0</td></tr>
+                    <tr><td>Length</td><td>26.0</td><td>27.0</td><td>28.0</td><td>29.0</td><td>30.0</td><td>30.0</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+    <!-- FLOATING CHECKOUT BUTTON -->
+    <div class="floating-checkout-wrapper" id="checkout-floater">
+        <div class="checkout-pill" onclick="handleFloatingClick()">
+            <div class="checkout-btn-part" id="checkout-label">Buy</div>
+            <div class="checkout-text-part" id="checkout-price">Now</div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <img src="media/Reson8 Logo Black_transparent.png" class="footer-logo-img" alt="RESON8 Logo">
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#"><i class="fa-regular fa-envelope"></i></a>
+            </div>
+            <div class="footer-links"><a href="index.html">HOME</a><a href="index.html#about">ABOUT US</a><a href="index.html#songs">SONGS</a><a href="index.html#podcasts">PODCASTS</a><a href="index.html#merch">MERCH</a></div>
+            <p class="copyright">RESON8 2025.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Header & Menu
+        const header = document.getElementById('main-header');
+        const menuOverlay = document.querySelector('.mobile-menu-overlay');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const menuClose = document.querySelector('.mobile-menu-close');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+        });
+        function toggleMenu() { if(menuOverlay) menuOverlay.classList.toggle('active'); }
+        if(menuBtn) menuBtn.addEventListener('click', toggleMenu);
+        if(menuClose) menuClose.addEventListener('click', toggleMenu);
+
+        // Carousel
+        function scrollToImg(carouselId, index, clickedThumb) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel) return;
+            carousel.scrollTo({ left: carousel.offsetWidth * index, behavior: 'smooth' });
+            const thumbs = clickedThumb.closest('.prod-thumbnails');
+            if(thumbs) {
+                thumbs.querySelectorAll('.thumb-btn').forEach(t => t.classList.remove('active'));
+                clickedThumb.classList.add('active');
+            }
+        }
+
+        // Inventory
+        function toggleInventory(color) {
+            // Get Elements
+            const whiteList = document.getElementById('list-white');
+            const sandList = document.getElementById('list-sand');
+            const whiteBtn = document.getElementById('btn-white');
+            const sandBtn = document.getElementById('btn-sand');
+
+            if (color === 'white') {
+                whiteList.classList.toggle('active');
+                whiteBtn.classList.toggle('active');
+            } 
+            else if (color === 'sand') {
+                sandList.classList.toggle('active');
+                sandBtn.classList.toggle('active');
+            }
+        }
+
+        // Size Button & Price Logic
+        function toggleSize(btn) {
+            const input = btn.nextElementSibling;
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                input.classList.remove('visible');
+                input.value = 0;
+            } else {
+                btn.classList.add('selected');
+                input.classList.add('visible');
+                input.value = 1;
+                input.focus();
+            }
+            updateCheckout();
+        }
+
+        document.querySelectorAll('.inv-qty-input').forEach(input => {
+            input.addEventListener('input', updateCheckout);
+        });
+
+        function updateCheckout() {
+            const inputs = document.querySelectorAll('.inv-qty-input');
+            let totalQty = 0;
+            inputs.forEach(inp => { totalQty += (parseInt(inp.value) || 0); });
+
+            const labelEl = document.getElementById('checkout-label');
+            const priceEl = document.getElementById('checkout-price');
+
+            if (totalQty > 0) {
+                labelEl.textContent = "Checkout";
+                priceEl.textContent = "RM " + (totalQty * 65);
+            } else {
+                labelEl.textContent = "Buy";
+                priceEl.textContent = "Now";
+            }
+        }
+
+        function handleFloatingClick() {
+            const inputs = document.querySelectorAll('.inv-qty-input');
+            let totalQty = 0;
+            inputs.forEach(inp => { totalQty += (parseInt(inp.value) || 0); });
+
+            if (totalQty > 0) {
+                // *** CHANGE THIS LINK to your Checkout URL ***
+                window.location.href = "https://google.com";
+            } else {
+                const section = document.getElementById('product-showcase');
+                if (section) section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
