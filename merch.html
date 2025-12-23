@@ -704,19 +704,48 @@
             }
         }
 
-        function handleFloatingClick() {
-            const inputs = document.querySelectorAll('.inv-qty-input');
-            let totalQty = 0;
-            inputs.forEach(inp => { totalQty += (parseInt(inp.value) || 0); });
+        /* --- UPDATED: handleFloatingClick for merch.html --- */
+function handleFloatingClick() {
+    // 1. Gather all inputs
+    const inputs = document.querySelectorAll('.inv-qty-input');
+    let totalQty = 0;
+    
+    // 2. Create an object to store cart data
+    let cartData = {
+        white: {},
+        sand: {}
+    };
 
-            if (totalQty > 0) {
-                // *** CHANGE THIS LINK to your Checkout URL ***
-                window.location.href = "https://google.com";
-            } else {
-                const section = document.getElementById('product-showcase');
-                if (section) section.scrollIntoView({ behavior: 'smooth' });
+    // 3. Loop through inputs to find what is selected
+    inputs.forEach(inp => {
+        const qty = parseInt(inp.value) || 0;
+        if (qty > 0) {
+            totalQty += qty;
+            
+            // Find which color and size this input belongs to
+            // We look at the parent structure: .inv-sizes-container.white-group or .sand-group
+            const container = inp.closest('.inv-sizes-container');
+            const sizeBtn = inp.previousElementSibling; // The size button is right before the input
+            const size = sizeBtn.innerText; // "S", "M", etc.
+
+            if (container.classList.contains('white-group')) {
+                cartData.white[size] = qty;
+            } else if (container.classList.contains('sand-group')) {
+                cartData.sand[size] = qty;
             }
         }
+    });
+
+    if (totalQty > 0) {
+        // --- SAVE TO STORAGE & REDIRECT ---
+        localStorage.setItem('reson8Cart', JSON.stringify(cartData));
+        window.location.href = "checkout.html"; // Make sure your file is named checkout.html
+    } else {
+        // Scroll to product section if empty
+        const section = document.getElementById('product-showcase');
+        if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }
+}
     </script>
 </body>
 </html>
