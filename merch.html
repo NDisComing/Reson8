@@ -143,23 +143,69 @@
         }
 
         /* "The Story" Section */
-        .story-section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-        .story-title { font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; line-height: 1; margin-bottom: 30px; }
-        .story-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: start;
-        }
-        .story-left img { border-radius: 10px; width: 100%; margin-top: 20px; }
-        .story-right {
-            font-size: 1rem;
-            text-align: justify;
-            color: #333;
-            font-family: 'Lato', sans-serif;
-            line-height: 1.8;
-            padding-top: 60px;
-        }
+        /* --- UPDATED STORY SECTION --- */
+.story-section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header Area */
+.story-header {
+    margin-bottom: 30px; /* Space between Title and Image */
+    text-align: left;
+}
+
+.story-subtitle {
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.story-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--primary-black);
+}
+
+/* Content Grid */
+.story-content {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr; /* Image slightly wider than text */
+    gap: 60px;
+    align-items: start; /* CRITICAL: Aligns top of Image with top of Text */
+}
+
+.story-image img {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.story-text {
+    font-family: 'Noto Sans SC', sans-serif; /* Best for Chinese text */
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+    text-align: justify;
+    padding-top: 5px; /* Tiny visual adjustment */
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .story-content {
+        grid-template-columns: 1fr; /* Stack vertically on mobile */
+        gap: 30px;
+    }
+    .story-title { font-size: 2.5rem; }
+    .story-header { text-align: center; } /* Center title on mobile */
+}
 
         /* --- PRODUCT SECTION (UPDATED LAYOUT) --- */
         .product-section {
@@ -460,21 +506,25 @@
     </section>
 
     <!-- THE STORY SECTION -->
-    <section class="story-section">
-        <div class="story-grid">
-            <div class="story-left">
-                <div style="margin-bottom: 20px; font-family: 'Lato'; text-transform: uppercase; letter-spacing: 1px;">The Concept of</div>
-                <h2 class="story-title">Resonate With God.</h2>
-                <img src="media/rwg_story.jpeg" alt="Group Back View">
-            </div>
-            <div class="story-right">
-                <p>神的频率不只存在于教会之中，也真实地存在于我们的日常—在奔跑的球场、相聚的停车场、停下脚步的楼梯间，在每一个平凡却真实的角落。这款设计体现了Reson8的核心精神「Letting God’s Frequency Resonate」。<br>灵感源自诗篇150:6，提醒我们凡有气息的都要赞美耶和华。
+<section class="story-section">
+    <!-- 1. Header Row (Full Width) -->
+    <div class="story-header">
+        <div class="story-subtitle">THE CONCEPT OF</div>
+        <h2 class="story-title">Resonate With God.</h2>
+    </div>
 
-简约的排版象征真理的纯粹，经文则成为整个设计的属灵根基。我们盼望，这不只是一件衣服，而是一种提醒—不只是在音乐响起时敬拜，更能在生活的每个角落，让神的话语与祂的爱持续回荡，随时随地敬拜祂。</p>
-                <p style="margin-top: 20px;"></p>
-            </div>
+    <!-- 2. Content Row (Image Left, Text Right) -->
+    <div class="story-content">
+        <div class="story-image">
+            <img src="https://placehold.co/800x600/d8cbb8/333?text=Group+Back+View" alt="Group Back View">
         </div>
-    </section>
+        <div class="story-text">
+            <p>神的频率不只存在于教会之中，也真实地存在于我们的日常—在奔跑的球场、相聚的停车场、停下脚步的楼梯间，在每一个平凡却真实的角落。这款设计体现了Reson8的核心精神「Letting God’s Frequency Resonate」。</p>
+            <br>
+            <p>灵感源自诗篇150:6，提醒我们凡有气息的都要赞美耶和华。简约的排版象征真理的纯粹，经文则成为整个设计的属灵根基。我们盼望，这不只是一件衣服，而是一种提醒—不只是在音乐响起时敬拜，更能在生活的每个角落，让神的话语与祂的爱持续回荡，随时随地敬拜祂。</p>
+        </div>
+    </div>
+</section>
 
     <!-- PRODUCT SHOWCASE SECTION -->
     <section class="product-section" id="product-showcase">
