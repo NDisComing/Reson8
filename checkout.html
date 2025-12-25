@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RESON8 | Checkout</title>
-    <link rel="icon" type="image/png" href="media/reson8 icon.png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;700;800&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
@@ -168,10 +168,18 @@
             </div>
 
             <form class="checkout-form" id="main-form" onsubmit="processOrder(event)">
-                
+                <!-- SECTION 2: CONTACT DETAILS -->
+                <div>
+                    <div class="form-section-title">1. Contact Information</div>
+                    <div class="input-grid">
+                        <div class="form-group"><input type="text" id="cust-name" placeholder="Full Name" required></div>
+                        <div class="form-group"><input type="tel" id="cust-phone" placeholder="Phone Number" required></div>
+                        <div class="form-group full-width"><input type="email" id="cust-email" placeholder="Email Address" required></div>
+                    </div>
+                </div>
                 <!-- SECTION 1: DELIVERY METHOD -->
                 <div>
-                    <div class="form-section-title">1. Delivery Method</div>
+                    <div class="form-section-title">2. Delivery Method</div>
                     
                     <div class="delivery-toggle-container">
                         <div class="delivery-option selected" id="opt-pickup" onclick="setDelivery('pickup')">
@@ -237,15 +245,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 2: CONTACT DETAILS -->
-                <div>
-                    <div class="form-section-title">2. Contact Information</div>
-                    <div class="input-grid">
-                        <div class="form-group"><input type="text" id="cust-name" placeholder="Full Name" required></div>
-                        <div class="form-group"><input type="tel" id="cust-phone" placeholder="Phone Number" required></div>
-                        <div class="form-group full-width"><input type="email" id="cust-email" placeholder="Email Address" required></div>
-                    </div>
-                </div>
+                
 
                 <!-- SECTION 3: ORDER SUMMARY (At Bottom) -->
                 <div class="summary-card">
