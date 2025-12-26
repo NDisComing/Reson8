@@ -155,9 +155,15 @@
     }
 
     .prod-carousel-track {
-        display: flex; width: 100%; height: 100%;
-        transition: transform 0.5s ease-in-out;
-    }
+    display: flex;
+    width: 100%;
+    height: 100%;
+    /* Smoother animation */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    /* Performance Fixes */
+    will-change: transform;
+    transform: translate3d(0, 0, 0); /* Forces GPU acceleration */
+}
 
     .prod-img { min-width: 100%; height: 100%; object-fit: cover; }
 
@@ -742,81 +748,72 @@
 <section class="product-section" id="product-showcase">
     <div class="product-layout-grid">
         
-        <!-- LEFT: GALLERY (30 Images) -->
+                <!-- LEFT: GALLERY (30 Images) -->
 <div class="gallery-column">
     <div class="prod-carousel-window">
         <div class="prod-carousel-track" id="main-track">
             <!-- 30 Main Images -->
-            <img src="media/rwg_b1.jpg" class="prod-img">
-            <img src="media/rwg2" class="prod-img">
-            <img src="media/rwg3" class="prod-img">
-            <img src="media/rwg4" class="prod-img">
-            <img src="media/rwg5" class="prod-img">
-            <img src="media/rwg6" class="prod-img">
-            <img src="media/rwg7" class="prod-img">
-            <img src="media/rwg8" class="prod-img">
-            <img src="media/rwg9" class="prod-img">
-            <img src="media/rwg10" class="prod-img">
-            <img src="media/rwg11" class="prod-img">
-            <img src="media/rwg12" class="prod-img">
-            <img src="media/rwg13" class="prod-img">
-            <img src="media/rwg14" class="prod-img">
-            <img src="media/rwg15" class="prod-img">
-            <img src="media/rwg16" class="prod-img">
-            <img src="media/rwg17" class="prod-img">
-            <img src="media/rwg18" class="prod-img">
-            <img src="media/rwg19" class="prod-img">
-            <img src="media/rwg20" class="prod-img">
-            <img src="media/rwg21" class="prod-img">
-            <img src="media/rwg22" class="prod-img">
-            <img src="media/rwg23" class="prod-img">
-            <img src="media/rwg24" class="prod-img">
-            <img src="media/rwg25" class="prod-img">
-            <img src="media/rwg26" class="prod-img">
-            <img src="media/rwg27" class="prod-img">
-            <img src="media/rwg28" class="prod-img">
-            <img src="media/rwg29" class="prod-img">
-            <img src="media/rwg30" class="prod-img">
+            <img src="media/rwg1.jpg" class="prod-img" >
+            <img src="media/rwg2.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg3.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg4.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg5.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg6.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg7.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg8.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg9.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg10.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg11.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg12.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg13.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg14.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg15.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg16.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg17.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg18.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg19.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg20.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg21.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg22.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg23.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg24.jpg" class="prod-img" loading="lazy" decoding="async">
+            <img src="media/rwg25.jpg" class="prod-img" loading="lazy" decoding="async">
+            
         </div>
     </div>
     
     <div class="thumb-scroll-container">
         <div class="prod-thumbnails">
             <!-- 30 Thumbnails (Must match order of above) -->
-            <img src="media/rwg_b1.jpg" class="thumb-btn active" onclick="goToSlide(0)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=2" class="thumb-btn" onclick="goToSlide(1)">
-            <img src="https://placehold.co/800x800/eee/333?text=3" class="thumb-btn" onclick="goToSlide(2)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=4" class="thumb-btn" onclick="goToSlide(3)">
-            <img src="https://placehold.co/800x800/eee/333?text=5" class="thumb-btn" onclick="goToSlide(4)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=6" class="thumb-btn" onclick="goToSlide(5)">
-            <img src="https://placehold.co/800x800/eee/333?text=7" class="thumb-btn" onclick="goToSlide(6)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=8" class="thumb-btn" onclick="goToSlide(7)">
-            <img src="https://placehold.co/800x800/eee/333?text=9" class="thumb-btn" onclick="goToSlide(8)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=10" class="thumb-btn" onclick="goToSlide(9)">
-            <img src="https://placehold.co/800x800/eee/333?text=11" class="thumb-btn" onclick="goToSlide(10)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=12" class="thumb-btn" onclick="goToSlide(11)">
-            <img src="https://placehold.co/800x800/eee/333?text=13" class="thumb-btn" onclick="goToSlide(12)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=14" class="thumb-btn" onclick="goToSlide(13)">
-            <img src="https://placehold.co/800x800/eee/333?text=15" class="thumb-btn" onclick="goToSlide(14)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=16" class="thumb-btn" onclick="goToSlide(15)">
-            <img src="https://placehold.co/800x800/eee/333?text=17" class="thumb-btn" onclick="goToSlide(16)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=18" class="thumb-btn" onclick="goToSlide(17)">
-            <img src="https://placehold.co/800x800/eee/333?text=19" class="thumb-btn" onclick="goToSlide(18)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=20" class="thumb-btn" onclick="goToSlide(19)">
-            <img src="https://placehold.co/800x800/eee/333?text=21" class="thumb-btn" onclick="goToSlide(20)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=22" class="thumb-btn" onclick="goToSlide(21)">
-            <img src="https://placehold.co/800x800/eee/333?text=23" class="thumb-btn" onclick="goToSlide(22)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=24" class="thumb-btn" onclick="goToSlide(23)">
-            <img src="https://placehold.co/800x800/eee/333?text=25" class="thumb-btn" onclick="goToSlide(24)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=26" class="thumb-btn" onclick="goToSlide(25)">
-            <img src="https://placehold.co/800x800/eee/333?text=27" class="thumb-btn" onclick="goToSlide(26)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=28" class="thumb-btn" onclick="goToSlide(27)">
-            <img src="https://placehold.co/800x800/eee/333?text=29" class="thumb-btn" onclick="goToSlide(28)">
-            <img src="https://placehold.co/800x800/d8cbb8/333?text=30" class="thumb-btn" onclick="goToSlide(29)">
+            <img src="media/rwg1.jpg" class="thumb-btn active" onclick="goToSlide(0)">
+            <img src="media/rwg2.jpg" class="thumb-btn" onclick="goToSlide(1)">
+            <img src="media/rwg3.jpg" class="thumb-btn" onclick="goToSlide(2)" loading="lazy" decoding="async">
+            <img src="media/rwg4.jpg" class="thumb-btn" onclick="goToSlide(3)" loading="lazy" decoding="async">
+            <img src="media/rwg5.jpg" class="thumb-btn" onclick="goToSlide(4)" loading="lazy" decoding="async">
+            <img src="media/rwg6.jpg" class="thumb-btn" onclick="goToSlide(5)" loading="lazy" decoding="async">
+            <img src="media/rwg7.jpg" class="thumb-btn" onclick="goToSlide(6)" loading="lazy" decoding="async">
+            <img src="media/rwg8.jpg" class="thumb-btn" onclick="goToSlide(7)" loading="lazy" decoding="async">
+            <img src="media/rwg9.jpg" class="thumb-btn" onclick="goToSlide(8)" loading="lazy" decoding="async">
+            <img src="media/rwg10.jpg" class="thumb-btn" onclick="goToSlide(9)" loading="lazy" decoding="async">
+            <img src="media/rwg11.jpg" class="thumb-btn" onclick="goToSlide(10)" loading="lazy" decoding="async">
+            <img src="media/rwg12.jpg" class="thumb-btn" onclick="goToSlide(11)" loading="lazy" decoding="async">
+            <img src="media/rwg13.jpg" class="thumb-btn" onclick="goToSlide(12)" loading="lazy" decoding="async">
+            <img src="media/rwg14.jpg" class="thumb-btn" onclick="goToSlide(13)" loading="lazy" decoding="async">
+            <img src="media/rwg15.jpg" class="thumb-btn" onclick="goToSlide(14)" loading="lazy" decoding="async">
+            <img src="media/rwg16.jpg" class="thumb-btn" onclick="goToSlide(15)" loading="lazy" decoding="async">
+            <img src="media/rwg17.jpg" class="thumb-btn" onclick="goToSlide(16)" loading="lazy" decoding="async">
+            <img src="media/rwg18.jpg" class="thumb-btn" onclick="goToSlide(17)" loading="lazy" decoding="async">
+            <img src="media/rwg19.jpg" class="thumb-btn" onclick="goToSlide(18)" loading="lazy" decoding="async">
+            <img src="media/rwg20.jpg" class="thumb-btn" onclick="goToSlide(19)" loading="lazy" decoding="async">
+            <img src="media/rwg21.jpg" class="thumb-btn" onclick="goToSlide(20)" loading="lazy" decoding="async">
+            <img src="media/rwg22.jpg" class="thumb-btn" onclick="goToSlide(21)" loading="lazy" decoding="async">
+            <img src="media/rwg23.jpg" class="thumb-btn" onclick="goToSlide(22)" loading="lazy" decoding="async">
+            <img src="media/rwg24.jpg" class="thumb-btn" onclick="goToSlide(23)" loading="lazy" decoding="async">
+            <img src="media/rwg25.jpg" class="thumb-btn" onclick="goToSlide(24)" loading="lazy" decoding="async">
+            
         </div>
     </div>
 </div>
-
         <!-- RIGHT: INFO & SELECTION -->
         <div class="info-column">
             <div class="prod-meta">
