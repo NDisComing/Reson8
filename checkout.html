@@ -296,196 +296,302 @@
 
     </div>
 
-    <script>
-        const PRICE_PER_UNIT = 65;
-        let deliveryMethod = 'pickup';
-        let totalQty = 0;
-        let subtotalPrice = 0;
-        let shippingFee = 0;
-        let finalTotal = 0;
-        let orderSummaryString = "";
-        let receiptHtml = "";
+<script>
+    /* =========================================
+       1. CONFIGURATION & CONSTANTS
+       ========================================= */
+    const PRICE_PER_UNIT = 65;
+    
+    // REPLACE THESE WITH YOUR ACTUAL KEYS
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzG0s5kvxNWyGLAMuCbWQxhiSg-IdCNicfg0SQAJEeaZIAdMtGrPtHpO97mv_0CXer5/exec"; // Web App URL from Google Apps Script
+    const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
+    const EMAILJS_SELLER_TEMPLATE_ID = "YOUR_SELLER_TEMPLATE_ID";
+    const EMAILJS_CUSTOMER_TEMPLATE_ID = "YOUR_CUSTOMER_TEMPLATE_ID";
+    const SELLER_PHONE_NUMBER = "01124213621"; // Format: 601xxxxxxxxx (No + or -)
 
-        // East Malaysia State Codes (For calculation logic)
-        const EM_STATES = ['SBH', 'SWK', 'LBN'];
+    // State Codes for Logic
+    const EM_STATES = ['SBH', 'SWK', 'LBN']; // Sabah, Sarawak, Labuan
 
-        // 1. INITIALIZE
-        window.addEventListener('DOMContentLoaded', () => {
-            const rawData = localStorage.getItem('reson8Cart');
-            const cartData = rawData ? JSON.parse(rawData) : {};
-            renderCart(cartData);
+    // Global Variables
+    let deliveryMethod = 'pickup';
+    let totalQty = 0;
+    let subtotalPrice = 0;
+    let shippingFee = 0;
+    let finalTotal = 0;
+    
+    // Strings for export
+    let orderSummaryString = ""; // For Database/Email (New lines = \n)
+    let whatsappString = "";     // For WhatsApp URL (New lines = %0A)
+    let receiptHtml = "";        // For HTML Display (New lines = <br>)
+
+
+    /* =========================================
+       2. INITIALIZATION
+       ========================================= */
+    window.addEventListener('DOMContentLoaded', () => {
+        const rawData = localStorage.getItem('reson8Cart');
+        const cartData = rawData ? JSON.parse(rawData) : {};
+        renderCart(cartData);
+    });
+
+
+    /* =========================================
+       3. RENDER CART & CALCULATE SUBTOTAL
+       ========================================= */
+    function renderCart(cartData) {
+        const listContainer = document.getElementById('order-list-container');
+        listContainer.innerHTML = '';
+        
+        // Reset Variables
+        totalQty = 0;
+        orderSummaryString = "";
+        whatsappString = "";
+        receiptHtml = "";
+
+        // Helper to process color groups
+        function processColor(colorName, items) {
+            let details = [];
+            let groupQty = 0;
+
+            for(const [size, qty] of Object.entries(items)) {
+                if(qty > 0) {
+                    details.push(`${size} x${qty}`);
+                    groupQty += qty;
+                }
+            }
+
+            if(details.length > 0) {
+                const detailStr = details.join(', ');
+                
+                // 1. Update UI
+                listContainer.innerHTML += `
+                    <div class="order-item">
+                        <div class="item-title">Resonate with God: ${colorName}</div>
+                        <div class="item-details">${detailStr}</div>
+                    </div>`;
+                
+                // 2. Build Strings
+                // For Email/Sheets (Clean text)
+                orderSummaryString += `- ${colorName}: ${detailStr}\n`;
+                // For WhatsApp (URL Encoded)
+                whatsappString += `%0A- ${colorName}: ${detailStr}`;
+                // For Receipt (HTML)
+                receiptHtml += `• ${colorName}: ${detailStr}<br>`;
+
+                totalQty += groupQty;
+            }
+        }
+
+        // Process Both Colors
+        if(cartData.white) processColor('White', cartData.white);
+        if(cartData.sand) processColor('Sand', cartData.sand);
+
+        // Calculate Subtotal
+        subtotalPrice = totalQty * PRICE_PER_UNIT;
+        
+        // Update UI
+        document.getElementById('item-count').textContent = totalQty;
+        document.getElementById('subtotal-display').textContent = "RM " + subtotalPrice;
+        
+        // Initial Shipping Calc
+        calculateShipping(); 
+    }
+
+
+    /* =========================================
+       4. DELIVERY TOGGLE LOGIC
+       ========================================= */
+    function setDelivery(method) {
+        deliveryMethod = method;
+        
+        const btnPickup = document.getElementById('opt-pickup');
+        const btnShip = document.getElementById('opt-shipping');
+        const pickupInfo = document.getElementById('pickup-details');
+        const shipForm = document.getElementById('shipping-details');
+
+        // Toggle Inputs Requirement
+        const shipInputs = ['ship-address1', 'ship-postcode', 'ship-state'];
+
+        if(method === 'pickup') {
+            btnPickup.classList.add('selected'); 
+            btnShip.classList.remove('selected');
+            pickupInfo.classList.remove('section-hidden'); 
+            shipForm.classList.add('section-hidden');
+            
+            // Un-require inputs
+            shipInputs.forEach(id => document.getElementById(id).required = false);
+        } else {
+            btnShip.classList.add('selected'); 
+            btnPickup.classList.remove('selected');
+            pickupInfo.classList.add('section-hidden'); 
+            shipForm.classList.remove('section-hidden');
+            
+            // Require inputs
+            shipInputs.forEach(id => document.getElementById(id).required = true);
+        }
+        
+        calculateShipping();
+    }
+
+
+    /* =========================================
+       5. SHIPPING FEE CALCULATION
+       ========================================= */
+    function calculateShipping() {
+        shippingFee = 0; // Default
+
+        if (deliveryMethod === 'shipping') {
+            const stateVal = document.getElementById('ship-state').value;
+            
+            if (stateVal) {
+                const isEM = EM_STATES.includes(stateVal); // Check if East Malaysia
+                
+                if (isEM) {
+                    // --- EAST MALAYSIA RATES ---
+                    if (totalQty <= 3) shippingFee = 20;
+                    else if (totalQty <= 7) shippingFee = 40;
+                    else shippingFee = 60; // 8+ pcs
+                } else {
+                    // --- WEST MALAYSIA RATES ---
+                    if (totalQty <= 3) shippingFee = 8;
+                    else if (totalQty <= 5) shippingFee = 12;
+                    else shippingFee = 15; // 6+ pcs
+                }
+            }
+        }
+
+        // Update UI
+        const shippingText = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
+        document.getElementById('shipping-display').textContent = shippingText;
+        
+        finalTotal = subtotalPrice + shippingFee;
+        document.getElementById('final-total-display').textContent = "RM " + finalTotal;
+    }
+
+
+    /* =========================================
+       6. PROCESS ORDER (MAIN SUBMIT)
+       ========================================= */
+    function processOrder(e) {
+        e.preventDefault(); // Stop page reload
+
+        // 1. Gather Data
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const email = document.getElementById('cust-email').value;
+        const orderRef = "R8-" + Math.floor(Math.random() * 100000);
+
+        // 2. Prepare Address String
+        let addressDetails = "Self Pickup (MEGA CMC)";
+        let stateName = "-";
+        
+        if (deliveryMethod === 'shipping') {
+            const a1 = document.getElementById('ship-address1').value;
+            const a2 = document.getElementById('ship-address2').value;
+            const post = document.getElementById('ship-postcode').value;
+            const city = document.getElementById('ship-city').value;
+            
+            // Get selected state text
+            const stateSelect = document.getElementById('ship-state');
+            if(stateSelect.selectedIndex > 0) {
+                stateName = stateSelect.options[stateSelect.selectedIndex].text;
+            }
+            
+            addressDetails = `${a1} ${a2}, ${post} ${city}, ${stateName}`;
+        }
+
+        // 3. Prepare Data Object (Matches Google Sheet & Email Templates)
+        const orderData = {
+            order_ref: orderRef,
+            cust_name: name,
+            cust_phone: phone,
+            cust_email: email,
+            delivery_method: deliveryMethod.toUpperCase(),
+            shipping_address: addressDetails,
+            order_summary: orderSummaryString, // Clean text for email/sheet
+            subtotal: "RM " + subtotalPrice,
+            shipping_fee: "RM " + shippingFee,
+            total_price: "RM " + finalTotal
+        };
+
+        // 4. Update Button UI
+        const btn = document.querySelector('.submit-btn');
+        const originalBtnText = btn.innerHTML;
+        btn.innerHTML = 'Processing... <i class="fa-solid fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        // --- ASYNC ACTIONS ---
+        
+        // A. Send to Google Sheets (no-cors means we won't see the response, but it sends)
+        const sheetPromise = fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors", 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
         });
 
-        // 2. RENDER CART CONTENT
-        function renderCart(cartData) {
-            const listContainer = document.getElementById('order-list-container');
-            listContainer.innerHTML = '';
-            
-            totalQty = 0;
-            orderSummaryString = "";
-            receiptHtml = "";
+        // B. Send Email to Seller
+        const emailSellerPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SELLER_TEMPLATE_ID, orderData);
+        
+        // C. Send Receipt to Customer
+        const emailCustPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CUSTOMER_TEMPLATE_ID, orderData);
 
-            function processColor(colorName, items) {
-                let details = [];
-                for(const [size, qty] of Object.entries(items)) {
-                    if(qty > 0) {
-                        details.push(`${size} x${qty}`);
-                        totalQty += qty;
-                    }
-                }
-                if(details.length > 0) {
-                    const detailStr = details.join(', ');
-                    listContainer.innerHTML += `
-                        <div class="order-item">
-                            <div class="item-title">Resonate with God: ${colorName}</div>
-                            <div class="item-details">${detailStr}</div>
-                        </div>`;
-                    
-                    orderSummaryString += `%0A- ${colorName}: ${detailStr}`;
-                    receiptHtml += `• ${colorName}: ${detailStr}<br>`;
-                }
-            }
+        // Execute all promises
+        Promise.allSettled([sheetPromise, emailSellerPromise, emailCustPromise])
+            .then((results) => {
+                // Check for email errors (optional logging)
+                if(results[1].status === 'rejected') console.error("Seller Email Failed", results[1].reason);
+                if(results[2].status === 'rejected') console.error("Customer Email Failed", results[2].reason);
 
-            if(cartData.white) processColor('White', cartData.white);
-            if(cartData.sand) processColor('Sand', cartData.sand);
+                // --- FINALIZE ---
+                finalizeCheckout(orderData);
+            });
+    }
 
-            subtotalPrice = totalQty * PRICE_PER_UNIT;
-            
-            // Update UI
-            document.getElementById('item-count').textContent = totalQty;
-            document.getElementById('subtotal-display').textContent = "RM " + subtotalPrice;
-            
-            calculateShipping(); // Run calc initially
+
+    /* =========================================
+       7. FINALIZE (RECEIPT & WHATSAPP)
+       ========================================= */
+    function finalizeCheckout(data) {
+        // 1. Construct WhatsApp Message
+        let waMsg = `*NEW ORDER ${data.order_ref}*%0A`;
+        waMsg += `Name: ${data.cust_name}%0A`;
+        waMsg += `Phone: ${data.cust_phone}%0A`;
+        waMsg += `Method: ${data.delivery_method}%0A`;
+        
+        if(data.delivery_method === 'SHIPPING') {
+            waMsg += `Addr: ${data.shipping_address}%0A`;
         }
+        
+        waMsg += `----------------%0A`;
+        waMsg += `*ITEMS:* ${whatsappString}%0A`; // Using URL encoded string
+        waMsg += `*Shipping:* ${data.shipping_fee}%0A`;
+        waMsg += `*TOTAL:* ${data.total_price}`;
 
-        // 3. TOGGLE DELIVERY METHOD
-        function setDelivery(method) {
-            deliveryMethod = method;
-            
-            const btnPickup = document.getElementById('opt-pickup');
-            const btnShip = document.getElementById('opt-shipping');
-            const pickupInfo = document.getElementById('pickup-details');
-            const shipForm = document.getElementById('shipping-details');
+        const waUrl = `https://wa.me/${SELLER_PHONE_NUMBER}?text=${waMsg}`;
 
-            if(method === 'pickup') {
-                btnPickup.classList.add('selected'); btnShip.classList.remove('selected');
-                pickupInfo.classList.remove('section-hidden'); shipForm.classList.add('section-hidden');
-                
-                // Remove required
-                document.getElementById('ship-address1').required = false;
-                document.getElementById('ship-postcode').required = false;
-                document.getElementById('ship-state').required = false;
-            } else {
-                btnShip.classList.add('selected'); btnPickup.classList.remove('selected');
-                pickupInfo.classList.add('section-hidden'); shipForm.classList.remove('section-hidden');
-                
-                // Add required
-                document.getElementById('ship-address1').required = true;
-                document.getElementById('ship-postcode').required = true;
-                document.getElementById('ship-state').required = true;
-            }
-            calculateShipping();
-        }
+        // 2. Update Receipt View UI
+        document.getElementById('rec-ref').textContent = data.order_ref;
+        document.getElementById('rec-name').textContent = data.cust_name;
+        document.getElementById('rec-total').textContent = data.total_price;
+        document.getElementById('rec-items').innerHTML = receiptHtml;
+        document.getElementById('btn-whatsapp-action').href = waUrl;
 
-        // 4. CALCULATE SHIPPING FEE
-        function calculateShipping() {
-            shippingFee = 0; // Default 0 for Pickup
+        // 3. Switch Views
+        document.getElementById('checkout-view').classList.add('section-hidden');
+        document.getElementById('receipt-view').classList.remove('section-hidden');
+        
+        // 4. Scroll to top
+        window.scrollTo(0,0);
 
-            if (deliveryMethod === 'shipping') {
-                const stateVal = document.getElementById('ship-state').value;
-                
-                if (stateVal) {
-                    const isEM = EM_STATES.includes(stateVal); // Check if East Malaysia
-                    
-                    if (isEM) {
-                        // EAST MALAYSIA RATES
-                        if (totalQty <= 3) shippingFee = 20;
-                        else if (totalQty <= 7) shippingFee = 40;
-                        else shippingFee = 60; // 8-10 pcs (and above cap)
-                    } else {
-                        // WEST MALAYSIA RATES
-                        if (totalQty <= 3) shippingFee = 8;
-                        else if (totalQty <= 5) shippingFee = 12;
-                        else shippingFee = 15; // 6-10 pcs (and above cap)
-                    }
-                }
-            }
-
-            // Update UI
-            document.getElementById('shipping-display').textContent = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
-            finalTotal = subtotalPrice + shippingFee;
-            document.getElementById('final-total-display').textContent = "RM " + finalTotal;
-        }
-
-        // 5. PROCESS ORDER
-        function processOrder(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const email = document.getElementById('cust-email').value;
-            const orderRef = "R8-" + Math.floor(Math.random() * 10000);
-
-            let addressDetails = "Self Pickup (MEGA CMC)";
-            if (deliveryMethod === 'shipping') {
-                const a1 = document.getElementById('ship-address1').value;
-                const post = document.getElementById('ship-postcode').value;
-                const city = document.getElementById('ship-city').value;
-                const state = document.getElementById('ship-state').options[document.getElementById('ship-state').selectedIndex].text;
-                addressDetails = `${a1}, ${post} ${city}, ${state}`;
-            }
-
-            // A. EmailJS Data
-            const emailParams = {
-                order_ref: orderRef,
-                cust_name: name,
-                cust_phone: phone,
-                cust_email: email,
-                delivery_method: deliveryMethod.toUpperCase(),
-                shipping_address: addressDetails,
-                order_summary: orderSummaryString.replace(/%0A/g, "\n"),
-                subtotal: "RM " + subtotalPrice,
-                shipping_fee: "RM " + shippingFee,
-                total_price: "RM " + finalTotal
-            };
-
-            // B. Send Email
-            const serviceID = "YOUR_SERVICE_ID";
-            const sellerTemplateID = "YOUR_SELLER_TEMPLATE_ID";
-            const customerTemplateID = "YOUR_CUSTOMER_TEMPLATE_ID";
-
-            const btn = document.querySelector('.submit-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = 'Processing... <i class="fa-solid fa-spinner fa-spin"></i>';
-
-            emailjs.send(serviceID, sellerTemplateID, emailParams)
-                .then(() => emailjs.send(serviceID, customerTemplateID, emailParams))
-                .finally(() => {
-                    // C. Show Receipt & WhatsApp Link
-                    let waMsg = `*NEW ORDER ${orderRef}*%0A`;
-                    waMsg += `Name: ${name}%0A`;
-                    waMsg += `Method: ${deliveryMethod.toUpperCase()}%0A`;
-                    if(deliveryMethod==='shipping') waMsg += `State: ${emailParams.shipping_address}%0A`;
-                    waMsg += `----------------%0A`;
-                    waMsg += `*ITEMS:* ${orderSummaryString}%0A`;
-                    waMsg += `*Shipping:* RM ${shippingFee}%0A`;
-                    waMsg += `*TOTAL:* RM ${finalTotal}`;
-
-                    const sellerPhone = "60123456789"; // REPLACE THIS
-                    const waUrl = `https://wa.me/${sellerPhone}?text=${waMsg}`;
-
-                    document.getElementById('rec-ref').textContent = orderRef;
-                    document.getElementById('rec-name').textContent = name;
-                    document.getElementById('rec-total').textContent = "RM " + finalTotal;
-                    document.getElementById('rec-items').innerHTML = receiptHtml;
-                    document.getElementById('btn-whatsapp-action').href = waUrl;
-
-                    document.getElementById('checkout-view').classList.add('section-hidden');
-                    document.getElementById('receipt-view').classList.remove('section-hidden');
-                    
-                    window.open(waUrl, '_blank');
-                });
-        }
-    </script>
+        // 5. Open WhatsApp automatically
+        setTimeout(() => {
+            window.open(waUrl, '_blank');
+        }, 1000);
+        
+        // 6. Clear Cart
+        localStorage.removeItem('reson8Cart');
+    }
+</script>
 </body>
 </html>
