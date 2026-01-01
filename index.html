@@ -7,7 +7,7 @@
 
     <!-- Add this line for the Favicon -->
 <link rel="icon" type="image/png" href="media/reson8 icon.png">
-    
+    <link rel="preload" href="media/herovid.webm" as="video" type="video/webm">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;700;800&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
@@ -283,9 +283,10 @@
     </div>
 
     <section class="hero">
-        <video class="background-video" autoplay muted loop playsinline poster="media/testvideo.mp4">
-            <source src="media/testvideo.mp4" type="video/mp4">
-        </video>
+        <video class="background-video" autoplay muted loop playsinline preload="auto">
+        <source src="media/herovid.webm" type="video/webm">
+        
+    </video>
         <div class="hero-logo-container">
             <img src="media/Reson8 Logo Black_transparent.png" alt="Reson8 Big Logo" class="hero-logo-img">
             <h2 style="font-family:'Montserrat'; font-weight:400; font-size:0.9rem; letter-spacing:4px; margin-top:10px; color:#000;"></h2>
