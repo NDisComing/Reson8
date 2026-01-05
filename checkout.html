@@ -142,6 +142,58 @@
             .full-width { grid-column: span 1; }
             .page-title { font-size: 2rem; }
         }
+        /* --- PROMO CODE STYLES --- */
+.promo-section {
+    margin: 20px 0;
+    padding-top: 20px;
+    border-top: 1px dashed #ddd;
+}
+
+.promo-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.promo-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase; /* Force caps visually */
+}
+
+.promo-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+.promo-btn:hover { background-color: var(--olive-green); }
+
+.promo-msg {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    font-weight: 600;
+}
+.promo-success { color: var(--olive-green); }
+.promo-error { color: var(--alert-red); }
+
+/* Discount Row in Summary */
+.discount-row {
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 1rem; 
+    margin-top: 5px; 
+    color: var(--olive-green);
+    font-weight: 700;
+    display: none; /* Hidden by default */
+}
     </style>
     
     <!-- EmailJS SDK -->
@@ -261,6 +313,21 @@
                         <span id="shipping-display">RM 0</span>
                     </div>
 
+                    <!-- NEW: DISCOUNT ROW (Hidden until active) -->
+    <div class="discount-row" id="discount-row">
+        <span>Discount <span id="promo-name-display" style="font-size:0.8rem; opacity:0.7;"></span></span>
+        <span id="discount-display">- RM 0</span>
+    </div>
+
+    <!-- NEW: PROMO INPUT AREA -->
+    <div class="promo-section">
+        <div class="promo-input-group">
+            <input type="text" id="promo-code-input" class="promo-input" placeholder="Promo Code">
+            <button type="button" class="promo-btn" onclick="applyPromoCode()">Apply</button>
+        </div>
+        <p id="promo-message" class="promo-msg"></p>
+    </div>
+
                     <div class="total-section">
                         <span class="total-label">Total Amount</span>
                         <span class="final-price" id="final-total-display">RM 0</span>
@@ -296,34 +363,47 @@
 
     </div>
 
+
 <script>
     /* =========================================
        1. CONFIGURATION & CONSTANTS
        ========================================= */
     const PRICE_PER_UNIT = 65;
     
-    // REPLACE THESE WITH YOUR ACTUAL KEYS
+    // --- PROMO CODES DATABASE ---
+    // Type: 'percent' (0.10 = 10%) or 'fixed' (10 = RM10)
+   const PROMO_CODES = {
+    // Example: Only works if you buy 2 or more items
+    "RESON8":     { type: "fixed", value: 8, minQty: 2 }, 
+
+    // Example: Works for any quantity (minQty: 1)
+    "nfnwnfewjonoiwnfinwnofwfiwfnjowjofw": { type: "percent", value: 0.10, minQty: 1 }, 
+    
+    // Example: Free shipping, min 1 item
+    "fwejiofjwfjiowejfiowjeifjwifjowijfoiwjfoijwoiejoiwjfoiwj":   { type: "fixed", value: 8, minQty: 1 }       
+};
+
+    // KEYS (Keep your existing keys here)
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSj-i7hCYNAQQKYnVXL0jrp9nFnyo1LaRUxyOxMCln09JsnM681e9ybueMcPPspJ4_/exec"; // Web App URL from Google Apps Script
     const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
     const EMAILJS_SELLER_TEMPLATE_ID = "YOUR_SELLER_TEMPLATE_ID";
     const EMAILJS_CUSTOMER_TEMPLATE_ID = "YOUR_CUSTOMER_TEMPLATE_ID";
     const SELLER_PHONE_NUMBER = "601124213621"; // Format: 601xxxxxxxxx (No + or -)
 
-    // State Codes for Logic
-    const EM_STATES = ['SBH', 'SWK', 'LBN']; // Sabah, Sarawak, Labuan
+    const EM_STATES = ['SBH', 'SWK', 'LBN'];
 
     // Global Variables
     let deliveryMethod = 'pickup';
     let totalQty = 0;
     let subtotalPrice = 0;
     let shippingFee = 0;
+    let discountAmount = 0; // NEW variable
+    let activePromoCode = ""; // NEW variable
     let finalTotal = 0;
     
-    // Strings for export
-    let orderSummaryString = ""; // For Database/Email (New lines = \n)
-    let whatsappString = "";     // For WhatsApp URL (New lines = %0A)
-    let receiptHtml = "";        // For HTML Display (New lines = <br>)
-
+    let orderSummaryString = ""; 
+    let whatsappString = "";     
+    let receiptHtml = "";       
 
     /* =========================================
        2. INITIALIZATION
@@ -334,154 +414,172 @@
         renderCart(cartData);
     });
 
-
     /* =========================================
-       3. RENDER CART & CALCULATE SUBTOTAL
+       3. RENDER CART
        ========================================= */
     function renderCart(cartData) {
         const listContainer = document.getElementById('order-list-container');
         listContainer.innerHTML = '';
         
-        // Reset Variables
         totalQty = 0;
         orderSummaryString = "";
         whatsappString = "";
         receiptHtml = "";
 
-        // Helper to process color groups
         function processColor(colorName, items) {
             let details = [];
             let groupQty = 0;
-
             for(const [size, qty] of Object.entries(items)) {
                 if(qty > 0) {
                     details.push(`${size} x${qty}`);
                     groupQty += qty;
                 }
             }
-
             if(details.length > 0) {
                 const detailStr = details.join(', ');
-                
-                // 1. Update UI
                 listContainer.innerHTML += `
                     <div class="order-item">
                         <div class="item-title">Resonate with God: ${colorName}</div>
                         <div class="item-details">${detailStr}</div>
                     </div>`;
-                
-                // 2. Build Strings
-                // For Email/Sheets (Clean text)
                 orderSummaryString += `- ${colorName}: ${detailStr}\n`;
-                // For WhatsApp (URL Encoded)
                 whatsappString += `%0A- ${colorName}: ${detailStr}`;
-                // For Receipt (HTML)
                 receiptHtml += `• ${colorName}: ${detailStr}<br>`;
-
                 totalQty += groupQty;
             }
         }
 
-        // Process Both Colors
         if(cartData.white) processColor('White', cartData.white);
         if(cartData.sand) processColor('Sand', cartData.sand);
 
-        // Calculate Subtotal
         subtotalPrice = totalQty * PRICE_PER_UNIT;
         
-        // Update UI
         document.getElementById('item-count').textContent = totalQty;
         document.getElementById('subtotal-display').textContent = "RM " + subtotalPrice;
         
-        // Initial Shipping Calc
-        calculateShipping(); 
+        calculateTotals(); 
     }
 
-
     /* =========================================
-       4. DELIVERY TOGGLE LOGIC
+       4. DELIVERY TOGGLE
        ========================================= */
     function setDelivery(method) {
         deliveryMethod = method;
-        
         const btnPickup = document.getElementById('opt-pickup');
         const btnShip = document.getElementById('opt-shipping');
         const pickupInfo = document.getElementById('pickup-details');
         const shipForm = document.getElementById('shipping-details');
-
-        // Toggle Inputs Requirement
         const shipInputs = ['ship-address1', 'ship-postcode', 'ship-state'];
 
         if(method === 'pickup') {
-            btnPickup.classList.add('selected'); 
-            btnShip.classList.remove('selected');
-            pickupInfo.classList.remove('section-hidden'); 
-            shipForm.classList.add('section-hidden');
-            
-            // Un-require inputs
+            btnPickup.classList.add('selected'); btnShip.classList.remove('selected');
+            pickupInfo.classList.remove('section-hidden'); shipForm.classList.add('section-hidden');
             shipInputs.forEach(id => document.getElementById(id).required = false);
         } else {
-            btnShip.classList.add('selected'); 
-            btnPickup.classList.remove('selected');
-            pickupInfo.classList.add('section-hidden'); 
-            shipForm.classList.remove('section-hidden');
-            
-            // Require inputs
+            btnShip.classList.add('selected'); btnPickup.classList.remove('selected');
+            pickupInfo.classList.add('section-hidden'); shipForm.classList.remove('section-hidden');
             shipInputs.forEach(id => document.getElementById(id).required = true);
         }
+        calculateTotals();
+    }
+/* =========================================
+   5. PROMO CODE LOGIC (UPDATED WITH MIN QTY)
+   ========================================= */
+function applyPromoCode() {
+    const input = document.getElementById('promo-code-input');
+    const msg = document.getElementById('promo-message');
+    const code = input.value.trim().toUpperCase();
+
+    // Reset first
+    discountAmount = 0;
+    activePromoCode = "";
+    document.getElementById('discount-row').style.display = 'none';
+
+    // Check if code exists
+    if (PROMO_CODES.hasOwnProperty(code)) {
+        const promo = PROMO_CODES[code];
         
-        calculateShipping();
+        // --- NEW CHECK: MINIMUM QUANTITY ---
+        if (totalQty < promo.minQty) {
+            msg.textContent = `This code requires a minimum of ${promo.minQty} items.`;
+            msg.className = "promo-msg promo-error";
+            calculateTotals(); // Recalculate without discount
+            return; // Stop here
+        }
+
+        // Calculate Discount
+        if (promo.type === 'percent') {
+            discountAmount = subtotalPrice * promo.value;
+        } else if (promo.type === 'fixed') {
+            discountAmount = promo.value;
+        }
+
+        // Valid Code UI
+        activePromoCode = code;
+        msg.textContent = `Code '${code}' applied!`;
+        msg.className = "promo-msg promo-success";
+        
+        // Show Discount Row
+        document.getElementById('discount-row').style.display = 'flex';
+        document.getElementById('promo-name-display').textContent = `(${code})`;
+        document.getElementById('discount-display').textContent = "- RM " + discountAmount.toFixed(0);
+
+    } else {
+        // Invalid Code
+        msg.textContent = "Invalid Promo Code";
+        msg.className = "promo-msg promo-error";
     }
 
+    // Recalculate Final Total
+    calculateTotals();
+}
 
     /* =========================================
-       5. SHIPPING FEE CALCULATION
+       6. MASTER CALCULATION (Shipping + Promo)
        ========================================= */
-    function calculateShipping() {
-        shippingFee = 0; // Default
-
+    function calculateTotals() {
+        // 1. Calculate Shipping
+        shippingFee = 0; 
         if (deliveryMethod === 'shipping') {
             const stateVal = document.getElementById('ship-state').value;
-            
             if (stateVal) {
-                const isEM = EM_STATES.includes(stateVal); // Check if East Malaysia
-                
+                const isEM = EM_STATES.includes(stateVal); 
                 if (isEM) {
-                    // --- EAST MALAYSIA RATES ---
                     if (totalQty <= 3) shippingFee = 20;
                     else if (totalQty <= 7) shippingFee = 40;
-                    else shippingFee = 60; // 8+ pcs
+                    else shippingFee = 60;
                 } else {
-                    // --- WEST MALAYSIA RATES ---
                     if (totalQty <= 3) shippingFee = 8;
                     else if (totalQty <= 5) shippingFee = 12;
-                    else shippingFee = 15; // 6+ pcs
+                    else shippingFee = 15;
                 }
             }
         }
 
-        // Update UI
+        // 2. Final Math
+        // Formula: Subtotal + Shipping - Discount
+        finalTotal = subtotalPrice + shippingFee - discountAmount;
+        
+        // Prevent negative total
+        if (finalTotal < 0) finalTotal = 0;
+
+        // 3. Update UI
         const shippingText = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
         document.getElementById('shipping-display').textContent = shippingText;
-        
-        finalTotal = subtotalPrice + shippingFee;
         document.getElementById('final-total-display').textContent = "RM " + finalTotal;
     }
 
-
     /* =========================================
-       6. PROCESS ORDER (MAIN SUBMIT)
+       7. PROCESS ORDER
        ========================================= */
     function processOrder(e) {
-        e.preventDefault(); // Stop page reload
+        e.preventDefault();
 
-        // 1. Gather Data
         const name = document.getElementById('cust-name').value;
         const phone = document.getElementById('cust-phone').value;
         const email = document.getElementById('cust-email').value;
         const orderRef = "R8-" + Math.floor(Math.random() * 100000);
 
-        // 2. Prepare Address String
         let addressDetails = "Self Pickup (MEGA CMC)";
         let stateName = "-";
         
@@ -490,17 +588,15 @@
             const a2 = document.getElementById('ship-address2').value;
             const post = document.getElementById('ship-postcode').value;
             const city = document.getElementById('ship-city').value;
-            
-            // Get selected state text
             const stateSelect = document.getElementById('ship-state');
-            if(stateSelect.selectedIndex > 0) {
-                stateName = stateSelect.options[stateSelect.selectedIndex].text;
-            }
-            
+            if(stateSelect.selectedIndex > 0) stateName = stateSelect.options[stateSelect.selectedIndex].text;
             addressDetails = `${a1} ${a2}, ${post} ${city}, ${stateName}`;
         }
 
-        // 3. Prepare Data Object (Matches Google Sheet & Email Templates)
+        // Add Promo Info to Strings
+        let promoString = activePromoCode ? `(Code: ${activePromoCode} | -RM${discountAmount})` : "";
+
+        // DATA OBJECT
         const orderData = {
             order_ref: orderRef,
             cust_name: name,
@@ -508,88 +604,61 @@
             cust_email: email,
             delivery_method: deliveryMethod.toUpperCase(),
             shipping_address: addressDetails,
-            order_summary: orderSummaryString, // Clean text for email/sheet
+            order_summary: orderSummaryString + promoString, // Add promo to summary
             subtotal: "RM " + subtotalPrice,
             shipping_fee: "RM " + shippingFee,
+            discount: "- RM " + discountAmount, // NEW FIELD
             total_price: "RM " + finalTotal
         };
 
-        // 4. Update Button UI
         const btn = document.querySelector('.submit-btn');
-        const originalBtnText = btn.innerHTML;
         btn.innerHTML = 'Processing... <i class="fa-solid fa-spinner fa-spin"></i>';
         btn.disabled = true;
 
-        // --- ASYNC ACTIONS ---
-        
-        // A. Send to Google Sheets (no-cors means we won't see the response, but it sends)
         const sheetPromise = fetch(GOOGLE_SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors", 
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderData)
+            method: "POST", mode: "no-cors", 
+            headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderData)
         });
 
-        // B. Send Email to Seller
         const emailSellerPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SELLER_TEMPLATE_ID, orderData);
-        
-        // C. Send Receipt to Customer
         const emailCustPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CUSTOMER_TEMPLATE_ID, orderData);
 
-        // Execute all promises
         Promise.allSettled([sheetPromise, emailSellerPromise, emailCustPromise])
-            .then((results) => {
-                // Check for email errors (optional logging)
-                if(results[1].status === 'rejected') console.error("Seller Email Failed", results[1].reason);
-                if(results[2].status === 'rejected') console.error("Customer Email Failed", results[2].reason);
-
-                // --- FINALIZE ---
+            .then(() => {
                 finalizeCheckout(orderData);
             });
     }
 
-
-    /* =========================================
-       7. FINALIZE (RECEIPT & WHATSAPP)
-       ========================================= */
     function finalizeCheckout(data) {
-        // 1. Construct WhatsApp Message
+        // Construct WhatsApp Message
         let waMsg = `*NEW ORDER ${data.order_ref}*%0A`;
         waMsg += `Name: ${data.cust_name}%0A`;
-        waMsg += `Phone: ${data.cust_phone}%0A`;
         waMsg += `Method: ${data.delivery_method}%0A`;
-        
-        if(data.delivery_method === 'SHIPPING') {
-            waMsg += `Addr: ${data.shipping_address}%0A`;
-        }
-        
+        if(data.delivery_method === 'SHIPPING') waMsg += `Addr: ${data.shipping_address}%0A`;
         waMsg += `----------------%0A`;
-        waMsg += `*ITEMS:* ${whatsappString}%0A`; // Using URL encoded string
+        waMsg += `*ITEMS:* ${whatsappString}%0A`;
         waMsg += `*Shipping:* ${data.shipping_fee}%0A`;
+        if(discountAmount > 0) waMsg += `*Discount:* -RM ${discountAmount} (${activePromoCode})%0A`; // Add Discount to WA
         waMsg += `*TOTAL:* ${data.total_price}`;
 
         const waUrl = `https://wa.me/${SELLER_PHONE_NUMBER}?text=${waMsg}`;
 
-        // 2. Update Receipt View UI
         document.getElementById('rec-ref').textContent = data.order_ref;
         document.getElementById('rec-name').textContent = data.cust_name;
         document.getElementById('rec-total').textContent = data.total_price;
-        document.getElementById('rec-items').innerHTML = receiptHtml;
+        
+        // Add discount line to receipt if active
+        let finalReceiptHtml = receiptHtml;
+        if(discountAmount > 0) finalReceiptHtml += `<br><b>Discount:</b> -RM ${discountAmount}`;
+        
+        document.getElementById('rec-items').innerHTML = finalReceiptHtml;
         document.getElementById('btn-whatsapp-action').href = waUrl;
 
-        // 3. Switch Views
         document.getElementById('checkout-view').classList.add('section-hidden');
         document.getElementById('receipt-view').classList.remove('section-hidden');
-        
-        // 4. Scroll to top
         window.scrollTo(0,0);
-
-        // 5. Open WhatsApp automatically
-        setTimeout(() => {
-            window.open(waUrl, '_blank');
-        }, 1000);
         
-        // 6. Clear Cart
+        setTimeout(() => { window.open(waUrl, '_blank'); }, 1000);
         localStorage.removeItem('reson8Cart');
     }
 </script>
