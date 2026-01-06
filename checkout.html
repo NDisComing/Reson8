@@ -367,44 +367,41 @@
 
 <script>
     /* =========================================
-       1. CONFIGURATION & CONSTANTS
+       1. CONFIGURATION & KEYS
        ========================================= */
     const PRICE_PER_UNIT = 65;
     
-    // --- PROMO CODES DATABASE ---
-    // Type: 'percent' (0.10 = 10%) or 'fixed' (10 = RM10)
-   const PROMO_CODES = {
-    // Example: Only works if you buy 2 or more items
-    "RESON8":     { type: "fixed", value: 8, minQty: 2 }, 
-
-    // Example: Works for any quantity (minQty: 1)
-    "nfnwnfewjonoiwnfinwnofwfiwfnjowjofw": { type: "percent", value: 0.10, minQty: 1 }, 
-    
-    // Example: Free shipping, min 1 item
-    "fwejiofjwfjiowejfiowjeifjwifjowijfoiwjfoijwoiejoiwjfoiwj":   { type: "fixed", value: 8, minQty: 1 }       
-};
-
-    // KEYS (Keep your existing keys here)
+    // REPLACE THESE WITH YOUR ACTUAL KEYS
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSj-i7hCYNAQQKYnVXL0jrp9nFnyo1LaRUxyOxMCln09JsnM681e9ybueMcPPspJ4_/exec"; // Web App URL from Google Apps Script
     const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
     const EMAILJS_SELLER_TEMPLATE_ID = "YOUR_SELLER_TEMPLATE_ID";
     const EMAILJS_CUSTOMER_TEMPLATE_ID = "YOUR_CUSTOMER_TEMPLATE_ID";
-    const SELLER_PHONE_NUMBER = "601124213621"; // Format: 601xxxxxxxxx (No + or -)
+    const SELLER_PHONE_NUMBER = "601124213621";
 
-    const EM_STATES = ['SBH', 'SWK', 'LBN'];
+    // State Codes for Logic
+    const EM_STATES = ['SBH', 'SWK', 'LBN']; 
+
+    // Promo Codes Database
+    const PROMO_CODES = {
+        "asADdasdadadadadadadadadadasasfsghgkjghkg": { type: "percent", value: 0.10, minQty: 1 }, 
+        "sdsafadsankndsnknanskngknkdnmsokxpkpskasd":     { type: "fixed", value: 10, minQty: 2 },
+        "RESON8":   { type: "fixed", value: 8, minQty: 2 } 
+    };
 
     // Global Variables
     let deliveryMethod = 'pickup';
     let totalQty = 0;
     let subtotalPrice = 0;
     let shippingFee = 0;
-    let discountAmount = 0; // NEW variable
-    let activePromoCode = ""; // NEW variable
+    let discountAmount = 0;
+    let activePromoCode = "";
     let finalTotal = 0;
     
+    // String Builders
     let orderSummaryString = ""; 
     let whatsappString = "";     
     let receiptHtml = "";       
+
 
     /* =========================================
        2. INITIALIZATION
@@ -413,7 +410,14 @@
         const rawData = localStorage.getItem('reson8Cart');
         const cartData = rawData ? JSON.parse(rawData) : {};
         renderCart(cartData);
+        
+        // Safety: Ensure state dropdown triggers calculation if HTML wasn't updated
+        const stateDrop = document.getElementById('ship-state');
+        if(stateDrop) {
+            stateDrop.addEventListener('change', calculateTotals);
+        }
     });
+
 
     /* =========================================
        3. RENDER CART
@@ -443,6 +447,7 @@
                         <div class="item-title">Resonate with God: ${colorName}</div>
                         <div class="item-details">${detailStr}</div>
                     </div>`;
+                
                 orderSummaryString += `- ${colorName}: ${detailStr}\n`;
                 whatsappString += `%0A- ${colorName}: ${detailStr}`;
                 receiptHtml += `• ${colorName}: ${detailStr}<br>`;
@@ -458,8 +463,10 @@
         document.getElementById('item-count').textContent = totalQty;
         document.getElementById('subtotal-display').textContent = "RM " + subtotalPrice;
         
+        // Trigger calculation to set initial 0 or shipping
         calculateTotals(); 
     }
+
 
     /* =========================================
        4. DELIVERY TOGGLE
@@ -483,100 +490,96 @@
         }
         calculateTotals();
     }
-/* =========================================
-   5. PROMO CODE LOGIC (UPDATED WITH MIN QTY)
-   ========================================= */
-function applyPromoCode() {
-    const input = document.getElementById('promo-code-input');
-    const msg = document.getElementById('promo-message');
-    const code = input.value.trim().toUpperCase();
 
-    // Reset first
-    discountAmount = 0;
-    activePromoCode = "";
-    document.getElementById('discount-row').style.display = 'none';
-
-    // Check if code exists
-    if (PROMO_CODES.hasOwnProperty(code)) {
-        const promo = PROMO_CODES[code];
-        
-        // --- NEW CHECK: MINIMUM QUANTITY ---
-        if (totalQty < promo.minQty) {
-            msg.textContent = `This code requires a minimum of ${promo.minQty} items.`;
-            msg.className = "promo-msg promo-error";
-            calculateTotals(); // Recalculate without discount
-            return; // Stop here
-        }
-
-        // Calculate Discount
-        if (promo.type === 'percent') {
-            discountAmount = subtotalPrice * promo.value;
-        } else if (promo.type === 'fixed') {
-            discountAmount = promo.value;
-        }
-
-        // Valid Code UI
-        activePromoCode = code;
-        msg.textContent = `Code '${code}' applied!`;
-        msg.className = "promo-msg promo-success";
-        
-        // Show Discount Row
-        document.getElementById('discount-row').style.display = 'flex';
-        document.getElementById('promo-name-display').textContent = `(${code})`;
-        document.getElementById('discount-display').textContent = "- RM " + discountAmount.toFixed(0);
-
-    } else {
-        // Invalid Code
-        msg.textContent = "Invalid Promo Code";
-        msg.className = "promo-msg promo-error";
-    }
-
-    // Recalculate Final Total
-    calculateTotals();
-}
 
     /* =========================================
-   6. MASTER CALCULATION (Shipping + Promo)
-   ========================================= */
-function calculateTotals() {
-    // 1. Calculate Shipping based on WM/EM rules
-    shippingFee = 0; 
-    
-    if (deliveryMethod === 'shipping') {
-        const stateVal = document.getElementById('ship-state').value;
-        
-        if (stateVal) {
-            const isEM = EM_STATES.includes(stateVal); 
+       5. PROMO CODE LOGIC
+       ========================================= */
+    function applyPromoCode() {
+        const input = document.getElementById('promo-code-input');
+        const msg = document.getElementById('promo-message');
+        const code = input.value.trim().toUpperCase();
+
+        // Reset
+        discountAmount = 0;
+        activePromoCode = "";
+        document.getElementById('discount-row').style.display = 'none';
+
+        if (PROMO_CODES.hasOwnProperty(code)) {
+            const promo = PROMO_CODES[code];
             
-            if (isEM) {
-                // --- EAST MALAYSIA ---
-                if (totalQty <= 3) shippingFee = 20;
-                else if (totalQty <= 7) shippingFee = 40;
-                else shippingFee = 60;
-            } else {
-                // --- WEST MALAYSIA ---
-                if (totalQty <= 3) shippingFee = 8;
-                else if (totalQty <= 5) shippingFee = 12;
-                else shippingFee = 15;
+            // Check Minimum Qty
+            if (totalQty < promo.minQty) {
+                msg.textContent = `Minimum ${promo.minQty} items required.`;
+                msg.className = "promo-msg promo-error";
+                calculateTotals(); 
+                return;
+            }
+
+            // Calculate Discount
+            if (promo.type === 'percent') {
+                discountAmount = subtotalPrice * promo.value;
+            } else if (promo.type === 'fixed') {
+                discountAmount = promo.value;
+            }
+
+            activePromoCode = code;
+            msg.textContent = `Code applied!`;
+            msg.className = "promo-msg promo-success";
+            
+            document.getElementById('discount-row').style.display = 'flex';
+            document.getElementById('promo-name-display').textContent = `(${code})`;
+            document.getElementById('discount-display').textContent = "- RM " + discountAmount.toFixed(0);
+
+        } else {
+            msg.textContent = "Invalid Code";
+            msg.className = "promo-msg promo-error";
+        }
+
+        calculateTotals();
+    }
+
+
+    /* =========================================
+       6. MASTER CALCULATION (SHIPPING + TOTAL)
+       ========================================= */
+    function calculateTotals() {
+        // 1. Calculate Shipping
+        shippingFee = 0; 
+        
+        if (deliveryMethod === 'shipping') {
+            const stateVal = document.getElementById('ship-state').value;
+            
+            if (stateVal) {
+                const isEM = EM_STATES.includes(stateVal); 
+                
+                if (isEM) {
+                    // East Malaysia
+                    if (totalQty <= 3) shippingFee = 20;
+                    else if (totalQty <= 7) shippingFee = 40;
+                    else shippingFee = 60;
+                } else {
+                    // West Malaysia
+                    if (totalQty <= 3) shippingFee = 8;
+                    else if (totalQty <= 5) shippingFee = 12;
+                    else shippingFee = 15;
+                }
             }
         }
+
+        // 2. Final Math
+        finalTotal = subtotalPrice + shippingFee - discountAmount;
+        if (finalTotal < 0) finalTotal = 0;
+
+        // 3. Update UI
+        const shippingText = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
+        document.getElementById('shipping-display').textContent = shippingText;
+        document.getElementById('final-total-display').textContent = "RM " + finalTotal;
     }
 
-    // 2. Calculate Final Total
-    // Formula: Subtotal + Shipping - Discount
-    finalTotal = subtotalPrice + shippingFee - discountAmount;
-    
-    // Prevent negative total
-    if (finalTotal < 0) finalTotal = 0;
-
-    // 3. Update UI Text
-    const shippingText = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
-    document.getElementById('shipping-display').textContent = shippingText;
-    document.getElementById('final-total-display').textContent = "RM " + finalTotal;
-}
 
     /* =========================================
-       7. PROCESS ORDER
+       7. PROCESS ORDER (SUBMIT)
        ========================================= */
     function processOrder(e) {
         e.preventDefault();
@@ -587,22 +590,22 @@ function calculateTotals() {
         const orderRef = "R8-" + Math.floor(Math.random() * 100000);
 
         let addressDetails = "Self Pickup (MEGA CMC)";
-        let stateName = "-";
         
         if (deliveryMethod === 'shipping') {
             const a1 = document.getElementById('ship-address1').value;
             const a2 = document.getElementById('ship-address2').value;
             const post = document.getElementById('ship-postcode').value;
             const city = document.getElementById('ship-city').value;
+            
             const stateSelect = document.getElementById('ship-state');
-            if(stateSelect.selectedIndex > 0) stateName = stateSelect.options[stateSelect.selectedIndex].text;
+            const stateName = stateSelect.options[stateSelect.selectedIndex].text;
+            
             addressDetails = `${a1} ${a2}, ${post} ${city}, ${stateName}`;
         }
 
-        // Add Promo Info to Strings
-        let promoString = activePromoCode ? `(Code: ${activePromoCode} | -RM${discountAmount})` : "";
+        // Add Promo to summary
+        let promoInfo = activePromoCode ? `(Code: ${activePromoCode} | -RM${discountAmount})` : "";
 
-        // DATA OBJECT
         const orderData = {
             order_ref: orderRef,
             cust_name: name,
@@ -610,10 +613,10 @@ function calculateTotals() {
             cust_email: email,
             delivery_method: deliveryMethod.toUpperCase(),
             shipping_address: addressDetails,
-            order_summary: orderSummaryString + promoString, // Add promo to summary
+            order_summary: orderSummaryString + promoInfo,
             subtotal: "RM " + subtotalPrice,
             shipping_fee: "RM " + shippingFee,
-            discount: "- RM " + discountAmount, // NEW FIELD
+            discount: "- RM " + discountAmount,
             total_price: "RM " + finalTotal
         };
 
@@ -621,11 +624,13 @@ function calculateTotals() {
         btn.innerHTML = 'Processing... <i class="fa-solid fa-spinner fa-spin"></i>';
         btn.disabled = true;
 
+        // A. Send to Sheets
         const sheetPromise = fetch(GOOGLE_SCRIPT_URL, {
             method: "POST", mode: "no-cors", 
             headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderData)
         });
 
+        // B. Send Emails
         const emailSellerPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SELLER_TEMPLATE_ID, orderData);
         const emailCustPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CUSTOMER_TEMPLATE_ID, orderData);
 
@@ -635,8 +640,11 @@ function calculateTotals() {
             });
     }
 
+
+    /* =========================================
+       8. FINALIZE (WHATSAPP + RECEIPT)
+       ========================================= */
     function finalizeCheckout(data) {
-        // Construct WhatsApp Message
         let waMsg = `*NEW ORDER ${data.order_ref}*%0A`;
         waMsg += `Name: ${data.cust_name}%0A`;
         waMsg += `Method: ${data.delivery_method}%0A`;
@@ -644,7 +652,7 @@ function calculateTotals() {
         waMsg += `----------------%0A`;
         waMsg += `*ITEMS:* ${whatsappString}%0A`;
         waMsg += `*Shipping:* ${data.shipping_fee}%0A`;
-        if(discountAmount > 0) waMsg += `*Discount:* -RM ${discountAmount} (${activePromoCode})%0A`; // Add Discount to WA
+        if(discountAmount > 0) waMsg += `*Discount:* -RM ${discountAmount} (${activePromoCode})%0A`;
         waMsg += `*TOTAL:* ${data.total_price}`;
 
         const waUrl = `https://wa.me/${SELLER_PHONE_NUMBER}?text=${waMsg}`;
@@ -653,11 +661,10 @@ function calculateTotals() {
         document.getElementById('rec-name').textContent = data.cust_name;
         document.getElementById('rec-total').textContent = data.total_price;
         
-        // Add discount line to receipt if active
-        let finalReceiptHtml = receiptHtml;
-        if(discountAmount > 0) finalReceiptHtml += `<br><b>Discount:</b> -RM ${discountAmount}`;
+        let finalRecHtml = receiptHtml;
+        if(discountAmount > 0) finalRecHtml += `<br><b>Discount:</b> -RM ${discountAmount}`;
+        document.getElementById('rec-items').innerHTML = finalRecHtml;
         
-        document.getElementById('rec-items').innerHTML = finalReceiptHtml;
         document.getElementById('btn-whatsapp-action').href = waUrl;
 
         document.getElementById('checkout-view').classList.add('section-hidden');
