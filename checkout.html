@@ -536,39 +536,44 @@ function applyPromoCode() {
 }
 
     /* =========================================
-       6. MASTER CALCULATION (Shipping + Promo)
-       ========================================= */
-    function calculateTotals() {
-        // 1. Calculate Shipping
-        shippingFee = 0; 
-        if (deliveryMethod === 'shipping') {
-            const stateVal = document.getElementById('ship-state').value;
-            if (stateVal) {
-                const isEM = EM_STATES.includes(stateVal); 
-                if (isEM) {
-                    if (totalQty <= 3) shippingFee = 20;
-                    else if (totalQty <= 7) shippingFee = 40;
-                    else shippingFee = 60;
-                } else {
-                    if (totalQty <= 3) shippingFee = 8;
-                    else if (totalQty <= 5) shippingFee = 12;
-                    else shippingFee = 15;
-                }
+   6. MASTER CALCULATION (Shipping + Promo)
+   ========================================= */
+function calculateTotals() {
+    // 1. Calculate Shipping based on WM/EM rules
+    shippingFee = 0; 
+    
+    if (deliveryMethod === 'shipping') {
+        const stateVal = document.getElementById('ship-state').value;
+        
+        if (stateVal) {
+            const isEM = EM_STATES.includes(stateVal); 
+            
+            if (isEM) {
+                // --- EAST MALAYSIA ---
+                if (totalQty <= 3) shippingFee = 20;
+                else if (totalQty <= 7) shippingFee = 40;
+                else shippingFee = 60;
+            } else {
+                // --- WEST MALAYSIA ---
+                if (totalQty <= 3) shippingFee = 8;
+                else if (totalQty <= 5) shippingFee = 12;
+                else shippingFee = 15;
             }
         }
-
-        // 2. Final Math
-        // Formula: Subtotal + Shipping - Discount
-        finalTotal = subtotalPrice + shippingFee - discountAmount;
-        
-        // Prevent negative total
-        if (finalTotal < 0) finalTotal = 0;
-
-        // 3. Update UI
-        const shippingText = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
-        document.getElementById('shipping-display').textContent = shippingText;
-        document.getElementById('final-total-display').textContent = "RM " + finalTotal;
     }
+
+    // 2. Calculate Final Total
+    // Formula: Subtotal + Shipping - Discount
+    finalTotal = subtotalPrice + shippingFee - discountAmount;
+    
+    // Prevent negative total
+    if (finalTotal < 0) finalTotal = 0;
+
+    // 3. Update UI Text
+    const shippingText = deliveryMethod === 'pickup' ? "Free (Pickup)" : "RM " + shippingFee;
+    document.getElementById('shipping-display').textContent = shippingText;
+    document.getElementById('final-total-display').textContent = "RM " + finalTotal;
+}
 
     /* =========================================
        7. PROCESS ORDER
